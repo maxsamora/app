@@ -105,7 +105,7 @@ const FinalScreen = ({ musicPlaying, volume, muted, onToggleMute, onVolumeChange
                 </div>
                 
                 <p className="text-2xl sm:text-4xl neon-pink font-bold">
-                  It was me — Maxwell
+                  It was me — M
                 </p>
                 
                 <div className="text-neon-cyan text-lg font-mono">
@@ -118,7 +118,7 @@ const FinalScreen = ({ musicPlaying, volume, muted, onToggleMute, onVolumeChange
             {showButton && (
               <div className="fade-in">
                 <Button
-                  onClick={() => window.open('https://instagram.com/maxwellofficial', '_blank')}
+                  onClick={() => window.open('https://www.instagram.com/maxsamora/', '_blank')}
                   className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold text-lg px-12 py-6 rounded-lg shadow-lg transform transition-all hover:scale-105"
                   style={{ boxShadow: '0 0 30px rgba(255, 0, 110, 0.5)' }}
                 >
