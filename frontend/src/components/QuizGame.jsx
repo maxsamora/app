@@ -171,6 +171,21 @@ const QuizGame = ({ onFinish, musicPlaying, volume, muted, onToggleMute, onVolum
 
       <div className="content-wrapper min-h-screen flex items-center justify-center p-4">
         <div className={`max-w-2xl w-full space-y-6 ${fadeIn ? 'fade-in' : ''}`}>
+          {/* Volume Control */}
+          <div className="flex justify-end">
+            <button
+              onClick={onToggleMute}
+              className="p-3 rounded-lg bg-black/70 backdrop-blur-sm border border-green-500/50 hover:border-green-500 hover:bg-black/90 transition-all glow-box"
+              title={muted ? "Unmute music" : "Mute music"}
+            >
+              {muted ? (
+                <VolumeX className="w-5 h-5 text-neon-green" />
+              ) : (
+                <Volume2 className="w-5 h-5 text-neon-green" />
+              )}
+            </button>
+          </div>
+
           <div className="glow-box rounded-lg p-4 bg-black/80 backdrop-blur-sm">
             <div className="flex items-center justify-between mb-2">
               <span className="text-neon-green text-sm font-mono">
