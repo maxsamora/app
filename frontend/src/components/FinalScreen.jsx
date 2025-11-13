@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
-import { Heart, Instagram, Sparkles, PartyPopper } from 'lucide-react';
+import { Heart, Instagram, Sparkles, PartyPopper, Volume2, VolumeX } from 'lucide-react';
 
 const FinalScreen = ({ musicPlaying, volume, muted, onToggleMute, onVolumeChange }) => {
   const [hearts, setHearts] = useState([]);
