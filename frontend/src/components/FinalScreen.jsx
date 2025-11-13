@@ -142,10 +142,23 @@ const FinalScreen = ({ musicPlaying, volume, muted, onToggleMute, onVolumeChange
             </div>
 
             <div className="mt-12">
-              <p className="text-neon-purple text-xl font-mono">
-                Happy Birthday, beautiful!
-              </p>
-              <p className="text-neon-cyan text-sm font-mono mt-2">
+              <div className="glow-box-purple rounded-lg p-8 bg-black/80 backdrop-blur-sm max-w-2xl mx-auto">
+                <p className="text-neon-pink text-2xl font-bold mb-6">
+                  Happy Birthday Gostosa.
+                </p>
+                <div className="text-neon-cyan text-base leading-relaxed space-y-4 text-left">
+                  <p>
+                    Thank you for being there when I needed someone the most, I'll never forget the strength and warmth you gave me.
+                  </p>
+                  <p>
+                    If life ever feels heavy, please don't give up. You have a beautiful soul, and the world is softer because you're in it.
+                  </p>
+                  <p className="text-neon-pink">
+                    I still care about you… more than you know.
+                  </p>
+                </div>
+              </div>
+              <p className="text-neon-green text-sm font-mono mt-6 opacity-75">
                 Hope you enjoyed this little game ♥
               </p>
             </div>
