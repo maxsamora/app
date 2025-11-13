@@ -59,6 +59,21 @@ const FinalScreen = ({ musicPlaying, volume, muted, onToggleMute, onVolumeChange
       ))}
 
       <div className="content-wrapper max-w-4xl mx-auto px-6 py-12 text-center">
+        {/* Volume Control */}
+        <div className="flex justify-end mb-4">
+          <button
+            onClick={onToggleMute}
+            className="p-3 rounded-lg bg-black/70 backdrop-blur-sm border border-purple-500/50 hover:border-purple-500 hover:bg-black/90 transition-all glow-box-purple"
+            title={muted ? "Unmute music" : "Mute music"}
+          >
+            {muted ? (
+              <VolumeX className="w-5 h-5 neon-purple" />
+            ) : (
+              <Volume2 className="w-5 h-5 neon-purple" />
+            )}
+          </button>
+        </div>
+
         <div className="mb-8 flex justify-center">
           <div className="relative">
             <div className="absolute inset-0 bg-green-500/20 rounded-full blur-3xl animate-pulse"></div>
