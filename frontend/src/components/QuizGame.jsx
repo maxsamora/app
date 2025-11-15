@@ -10,21 +10,21 @@ const questions = [
     answer: "central perk",
     alternatives: ["centralperk", "central-perk"],
     hint: "It's a coffee shop...",
-    backgroundGif: "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3OTQ1M2VqN2hwaDIyOGptNHE1YzN4YmF4ZWhxdnZ3MXk2bmpjM2ZjZiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/J06yVeVA5HedwewpzD/giphy.gif"
+    backgroundGif: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2ViYWpiODJuYzB1a3AwdDhqaDloNGg1cTd6N3ZkcTNwdnk4aWVqcSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/qdeImlUdsbSso/giphy.gif"
   },
   {
     question: "What is Ross's profession?",
     answer: "paleontologist",
     alternatives: ["palaeontologist"],
     hint: "He works with dinosaurs...",
-    backgroundGif: "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3MXM1NndyNG53Nnk2M21neDF4NDkxZGgxcWowY3A5anM1ZHZ2dzZxcCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/S3cM2wo5ViXnM1HcHI/giphy.gif"
+    backgroundGif: "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3b3U4NXc1c29xOTc3anhldHhtc2pubHVtdzhlOGo2Zm1veWh4a3RxNyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/7g48X8D1Wo024/giphy.gif"
   },
   {
     question: "What is Monica's apartment number?",
     answer: "20",
     alternatives: ["twenty", "#20", "number 20"],
     hint: "It's a two-digit number...",
-    backgroundGif: "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3MXM1NndyNG53Nnk2M21neDF4NDkxZGgxcWowY3A5anM1ZHZ2dzZxcCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/LnELTnEsOZ5UDQofr6/giphy.gif"
+    backgroundGif: "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3MXM1NndyNG53Nnk2M21neDF4NDkxZGgxcWowY3A5anM1ZHZ2dzZxcCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/S3cM2wo5ViXnM1HcHI/giphy.gif"
   },
   {
     question: "What is Chandler's middle name?",
