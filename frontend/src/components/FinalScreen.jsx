@@ -393,7 +393,7 @@ const FinalScreen = ({
               <p className="text-neon-pink text-lg">
                 May God bless you, protect you, and guide you wherever you go.
                 And may every dream you carry, even the quiet ones, find a way to come true.
-                I still care about you… more than you know.
+                I still care about you… 
               </p>
             </div>
 

@@ -11,6 +11,7 @@ body {
   background: #000000;
   color: #00ff41;
   overflow-x: hidden;
+  width: 100%;
 }
 
 .App {
@@ -190,7 +191,17 @@ body {
 @media (max-width: 768px) {
   .neon-green,
   .neon-purple,
-  .neon-cyan {
+  .neon-cyan,
+  .neon-pink {
     text-shadow: 0 0 5px currentColor, 0 0 10px currentColor;
+  }
+  
+  .glow-box,
+  .glow-box-purple {
+    box-shadow: 0 0 10px rgba(0, 255, 65, 0.2), inset 0 0 10px rgba(0, 255, 65, 0.05);
+  }
+  
+  .heart {
+    font-size: 18px;
   }
 }
