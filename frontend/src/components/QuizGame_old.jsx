@@ -10,21 +10,21 @@ const questions = [
     answer: "central perk",
     alternatives: ["centralperk", "central-perk"],
     hint: "It's a coffee shop...",
-    backgroundGif: "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3OTQ1M2VqN2hwaDIyOGptNHE1YzN4YmF4ZWhxdnZ3MXk2bmpjM2ZjZiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/J06yVeVA5HedwewpzD/giphy.gif"
+    backgroundGif: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2ViYWpiODJuYzB1a3AwdDhqaDloNGg1cTd6N3ZkcTNwdnk4aWVqcSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/qdeImlUdsbSso/giphy.gif"
   },
   {
     question: "What is Ross's profession?",
     answer: "paleontologist",
     alternatives: ["palaeontologist"],
     hint: "He works with dinosaurs...",
-    backgroundGif: "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3MXM1NndyNG53Nnk2M21neDF4NDkxZGgxcWowY3A5anM1ZHZ2dzZxcCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/S3cM2wo5ViXnM1HcHI/giphy.gif"
+    backgroundGif: "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3b3U4NXc1c29xOTc3anhldHhtc2pubHVtdzhlOGo2Zm1veWh4a3RxNyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/7g48X8D1Wo024/giphy.gif"
   },
   {
     question: "What is Monica's apartment number?",
     answer: "20",
     alternatives: ["twenty", "#20", "number 20"],
     hint: "It's a two-digit number...",
-    backgroundGif: "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3MXM1NndyNG53Nnk2M21neDF4NDkxZGgxcWowY3A5anM1ZHZ2dzZxcCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/LnELTnEsOZ5UDQofr6/giphy.gif"
+    backgroundGif: "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3MXM1NndyNG53Nnk2M21neDF4NDkxZGgxcWowY3A5anM1ZHZ2dzZxcCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/S3cM2wo5ViXnM1HcHI/giphy.gif"
   },
   {
     question: "What is Chandler's middle name?",
@@ -157,7 +157,7 @@ const QuizGame = ({ onFinish, musicPlaying, volume, muted, onToggleMute, onVolum
 
   return (
     <div 
-      className="min-h-screen relative overflow-x-hidden w-full"
+      className="min-h-screen relative overflow-hidden"
       style={{
         backgroundImage: `url(${questions[currentQuestion].backgroundGif})`,
         backgroundSize: 'cover',
@@ -169,82 +169,75 @@ const QuizGame = ({ onFinish, musicPlaying, volume, muted, onToggleMute, onVolum
       <div className="bg-overlay"></div>
       <div className="scanline"></div>
 
-      <div className="content-wrapper min-h-screen flex items-center justify-center p-4 sm:p-6 md:p-8">
-        <div className={`w-full max-w-2xl space-y-4 sm:space-y-6 ${fadeIn ? 'fade-in' : ''}`}>
+      <div className="content-wrapper min-h-screen flex items-center justify-center p-4">
+        <div className={`max-w-2xl w-full space-y-6 ${fadeIn ? 'fade-in' : ''}`}>
           {/* Volume Control */}
           <div className="flex justify-end">
             <button
               onClick={onToggleMute}
-              className="p-2 sm:p-3 rounded-lg bg-black/70 backdrop-blur-sm border border-green-500/50 hover:border-green-500 hover:bg-black/90 transition-all glow-box"
+              className="p-3 rounded-lg bg-black/70 backdrop-blur-sm border border-green-500/50 hover:border-green-500 hover:bg-black/90 transition-all glow-box"
               title={muted ? "Unmute music" : "Mute music"}
             >
               {muted ? (
-                <VolumeX className="w-4 h-4 sm:w-5 sm:h-5 text-neon-green" />
+                <VolumeX className="w-5 h-5 text-neon-green" />
               ) : (
-                <Volume2 className="w-4 h-4 sm:w-5 sm:h-5 text-neon-green" />
+                <Volume2 className="w-5 h-5 text-neon-green" />
               )}
             </button>
           </div>
 
-          {/* Progress bar */}
-          <div className="glow-box rounded-lg p-3 sm:p-4 bg-black/80 backdrop-blur-sm">
-            <div className="flex items-center justify-between mb-2 text-xs sm:text-sm">
-              <span className="text-neon-green font-mono">
+          <div className="glow-box rounded-lg p-4 bg-black/80 backdrop-blur-sm">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-neon-green text-sm font-mono">
                 Question {currentQuestion + 1} / {questions.length}
               </span>
-              <span className="text-neon-cyan font-mono">
+              <span className="text-neon-cyan text-sm font-mono">
                 {Math.round(progress)}% Complete
               </span>
             </div>
             <Progress value={progress} className="h-2" />
           </div>
 
-          {/* Hacker message */}
-          <div className="text-center px-2">
-            <p className="text-sm sm:text-base md:text-lg text-neon-purple pulse flex items-center justify-center gap-2 flex-wrap">
-              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
-              <span>{hackerMessage}</span>
-              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
+          <div className="text-center">
+            <p className="text-neon-purple text-lg pulse flex items-center justify-center gap-2">
+              <Sparkles className="w-5 h-5" />
+              {hackerMessage}
+              <Sparkles className="w-5 h-5" />
             </p>
           </div>
 
-          {/* Question card */}
-          <div className="glow-box rounded-lg p-4 sm:p-6 bg-white/90 backdrop-blur-sm space-y-4 sm:space-y-6 w-full max-w-[95vw] sm:max-w-full mx-auto">
-            {/* Terminal header */}
-            <div className="text-green-600 text-xs font-mono flex items-center gap-2 pb-3 sm:pb-4 border-b border-green-600/30 overflow-x-auto">
+          <div className="glow-box rounded-lg p-6 bg-white/90 backdrop-blur-sm space-y-6">
+            <div className="text-green-600 text-xs font-mono flex items-center gap-2 pb-4 border-b border-green-600/30">
               <span className="text-red-500">●</span>
               <span className="text-yellow-500">●</span>
               <span className="text-green-500">●</span>
-              <span className="ml-2 whitespace-nowrap">secret_admirer.terminal</span>
+              <span className="ml-2">secret_admirer.terminal</span>
             </div>
 
-            {/* Question */}
-            <div className="space-y-3 sm:space-y-4">
-              <p className="text-gray-900 text-base sm:text-lg md:text-xl font-mono leading-relaxed break-words">
+            <div className="space-y-4">
+              <p className="text-gray-900 text-lg sm:text-xl font-mono leading-relaxed">
                 <span className="text-green-600">❯ </span>
                 {questions[currentQuestion].question}
               </p>
 
-              {/* Hint */}
               {showHint && (
-                <div className="text-cyan-700 text-xs sm:text-sm font-mono p-3 bg-cyan-50 rounded border border-cyan-300">
-                  <Lightbulb className="inline-block w-3 h-3 sm:w-4 sm:h-4 mr-2" />
+                <div className="text-cyan-700 text-sm font-mono p-3 bg-cyan-50 rounded border border-cyan-300">
+                  <Lightbulb className="inline-block w-4 h-4 mr-2" />
                   <span className="font-bold">Hint: </span>
                   {questions[currentQuestion].hint}
                 </div>
               )}
 
-              {/* Input */}
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <span className="text-green-600 font-mono font-bold flex-shrink-0">$</span>
+                  <span className="text-green-600 font-mono font-bold">$</span>
                   <Input
                     type="text"
                     value={userAnswer}
                     onChange={(e) => setUserAnswer(e.target.value)}
                     onKeyPress={handleKeyPress}
                     placeholder="Type your answer here..."
-                    className="flex-1 bg-gray-100 border-gray-300 text-gray-900 font-mono focus:border-green-500 focus:ring-green-500 text-sm sm:text-base"
+                    className="flex-1 bg-gray-100 border-gray-300 text-gray-900 font-mono focus:border-green-500 focus:ring-green-500"
                     autoFocus
                   />
                 </div>
@@ -252,27 +245,26 @@ const QuizGame = ({ onFinish, musicPlaying, volume, muted, onToggleMute, onVolum
                 <Button
                   onClick={checkAnswer}
                   disabled={!userAnswer.trim()}
-                  className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-mono uppercase tracking-wide py-3 sm:py-4 text-sm sm:text-base"
+                  className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-mono uppercase tracking-wide"
                 >
                   Submit Answer
                 </Button>
               </div>
 
-              {/* Feedback */}
               {isCorrect !== null && (
-                <div className={`flex items-center gap-2 p-3 rounded font-mono text-xs sm:text-sm ${
+                <div className={`flex items-center gap-2 p-3 rounded font-mono ${
                   isCorrect 
                     ? 'bg-green-100 text-green-800 border border-green-300' 
                     : 'bg-red-100 text-red-800 border border-red-300'
                 }`}>
                   {isCorrect ? (
                     <>
-                      <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
+                      <CheckCircle2 className="w-5 h-5" />
                       <span>Correct! Access granted...</span>
                     </>
                   ) : (
                     <>
-                      <XCircle className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
+                      <XCircle className="w-5 h-5" />
                       <span>Access denied. Try again...</span>
                     </>
                   )}
@@ -281,8 +273,7 @@ const QuizGame = ({ onFinish, musicPlaying, volume, muted, onToggleMute, onVolum
             </div>
           </div>
 
-          {/* Progress message */}
-          <div className="text-center text-xs sm:text-sm neon-cyan font-mono bg-black/50 backdrop-blur-sm p-3 rounded-lg">
+          <div className="text-center text-sm neon-cyan font-mono bg-black/50 backdrop-blur-sm p-3 rounded-lg">
             {currentQuestion < questions.length - 1 
               ? "Keep going... You're getting closer to the truth."
               : "Final question! The secret will be revealed soon..."}
