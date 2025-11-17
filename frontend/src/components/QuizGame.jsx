@@ -171,8 +171,17 @@ const QuizGame = ({ onFinish, musicPlaying, volume, muted, onToggleMute, onVolum
 
       <div className="content-wrapper min-h-screen flex items-center justify-center p-4 sm:p-6 md:p-8">
         <div className={`w-full max-w-2xl space-y-4 sm:space-y-6 ${fadeIn ? 'fade-in' : ''}`}>
-          {/* Volume Control */}
-          <div className="flex justify-end">
+          {/* Volume Control & Manual Play Button */}
+          <div className="flex justify-end gap-2">
+            {showPlayButton && (
+              <button
+                onClick={onManualPlay}
+                className="p-2 sm:p-3 rounded-lg bg-green-600 hover:bg-green-700 backdrop-blur-sm border border-green-500 transition-all glow-box animate-pulse"
+                title="Tap to play music"
+              >
+                <Play className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+              </button>
+            )}
             <button
               onClick={onToggleMute}
               className="p-2 sm:p-3 rounded-lg bg-black/70 backdrop-blur-sm border border-green-500/50 hover:border-green-500 hover:bg-black/90 transition-all glow-box"
