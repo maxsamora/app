@@ -38,17 +38,32 @@ function App() {
         playPromise
           .then(() => {
             console.log("Music started successfully");
+            setShowPlayButton(false);
           })
           .catch(err => {
             console.log("Audio autoplay blocked. User needs to interact:", err);
-            // Set a flag that music is ready but needs user interaction
-            setMusicPlaying(false);
+            // Show manual play button for mobile users
+            setShowPlayButton(true);
           });
       }
     } else if (audioRef.current && !musicPlaying) {
       audioRef.current.pause();
     }
   }, [musicPlaying]);
+
+  const handleManualPlay = () => {
+    if (audioRef.current) {
+      setMusicPlaying(true);
+      audioRef.current.play()
+        .then(() => {
+          console.log("Music manually started");
+          setShowPlayButton(false);
+        })
+        .catch(err => {
+          console.log("Manual play failed:", err);
+        });
+    }
+  };
 
   const startGame = () => {
     setGameState('quiz');
