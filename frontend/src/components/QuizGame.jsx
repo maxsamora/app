@@ -90,7 +90,7 @@ const hackerMessages = [
   "Processing love.exe..."
 ];
 
-const QuizGame = ({ onFinish, musicPlaying, volume, muted, onToggleMute, onVolumeChange }) => {
+const QuizGame = ({ onFinish, musicPlaying, volume, muted, onToggleMute, onVolumeChange, showPlayButton, onManualPlay }) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [userAnswer, setUserAnswer] = useState("");
   const [isCorrect, setIsCorrect] = useState(null);
