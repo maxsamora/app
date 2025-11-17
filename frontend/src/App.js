@@ -120,6 +120,8 @@ function App() {
           muted={muted}
           onToggleMute={toggleMute}
           onVolumeChange={handleVolumeChange}
+          showPlayButton={showPlayButton}
+          onManualPlay={handleManualPlay}
         />
       )}
 
