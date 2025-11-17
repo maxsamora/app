@@ -9,6 +9,7 @@ function App() {
   const [musicPlaying, setMusicPlaying] = useState(false);
   const [volume, setVolume] = useState(0.3);
   const [muted, setMuted] = useState(false);
+  const [showPlayButton, setShowPlayButton] = useState(false);
 
   // Audio references
   const audioRef = useRef(null);         // intro music
