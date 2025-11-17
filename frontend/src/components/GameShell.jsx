@@ -1,42 +1,31 @@
-// GameShell.jsx
-const GameShell = ({ children, fadeMode = "none", backgroundImage }) => {
+import React from "react";
+
+const GameShell = ({ children, background }) => {
   return (
     <div
-      className={`cinematic-shell ${
-        fadeMode === "out"
-          ? "bg-fade-out"
-          : fadeMode === "in"
-          ? "bg-fade-in"
-          : ""
-      }`}
+      className="
+        min-h-screen
+        w-full
+        overflow-x-hidden
+        bg-black
+        flex
+        items-start
+        justify-center
+      "
       style={{
-        backgroundImage: `url('${backgroundImage}')`,
+        backgroundImage: `url(${background})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
       }}
     >
-      {/* CRT line */}
-      <div className="scanline" />
+      {/* overlay layer to keep text readable on all devices */}
+      <div className="absolute inset-0 bg-black/50 pointer-events-none" />
 
-      {/* Classic hacker scanlines */}
-      <div className="absolute inset-0 opacity-10 pointer-events-none">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage:
-              "repeating-linear-gradient(0deg, #00ff41 0px, #00ff41 1px, transparent 1px, transparent 2px)",
-            backgroundSize: "100% 4px",
-          }}
-        />
+      {/* centered content with controlled width */}
+      <div className="relative z-10 w-full max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+        {children}
       </div>
-
-      {/* Cinematic layers */}
-      <div className="cinematic-overlay" />
-      <div className="stars-layer" />
-
-      {/* CHILD CONTENT */}
-      <div className="relative z-10 w-full">{children}</div>
     </div>
   );
 };
