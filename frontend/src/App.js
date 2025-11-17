@@ -29,11 +29,23 @@ function App() {
   }, [volume, muted]);
 
   useEffect(() => {
-    // Auto-play intro music
     if (audioRef.current && musicPlaying) {
-      audioRef.current.play().catch(err => {
-        console.log("Audio autoplay blocked:", err);
-      });
+      // Ensure audio can play on mobile by handling user interaction
+      const playPromise = audioRef.current.play();
+      
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            console.log("Music started successfully");
+          })
+          .catch(err => {
+            console.log("Audio autoplay blocked. User needs to interact:", err);
+            // Set a flag that music is ready but needs user interaction
+            setMusicPlaying(false);
+          });
+      }
+    } else if (audioRef.current && !musicPlaying) {
+      audioRef.current.pause();
     }
   }, [musicPlaying]);
 
