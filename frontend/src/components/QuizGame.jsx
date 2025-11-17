@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Progress } from './ui/progress';
-import { CheckCircle2, XCircle, Sparkles, Lightbulb, Volume2, VolumeX } from 'lucide-react';
+import { CheckCircle2, XCircle, Sparkles, Lightbulb, Volume2, VolumeX, Play } from 'lucide-react';
 
 const questions = [
   {
