@@ -59,8 +59,17 @@ const FinalScreen = ({ musicPlaying, volume, muted, onToggleMute, onVolumeChange
       ))}
 
       <div className="content-wrapper w-full max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-10 md:py-12 text-center overflow-y-auto max-h-screen">
-        {/* Volume Control */}
-        <div className="flex justify-end mb-3 sm:mb-4">
+        {/* Volume Control & Manual Play Button */}
+        <div className="flex justify-end gap-2 mb-3 sm:mb-4">
+          {showPlayButton && (
+            <button
+              onClick={onManualPlay}
+              className="p-2 sm:p-3 rounded-lg bg-purple-600 hover:bg-purple-700 backdrop-blur-sm border border-purple-500 transition-all glow-box-purple animate-pulse"
+              title="Tap to play music"
+            >
+              <Play className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+            </button>
+          )}
           <button
             onClick={onToggleMute}
             className="p-2 sm:p-3 rounded-lg bg-black/70 backdrop-blur-sm border border-purple-500/50 hover:border-purple-500 hover:bg-black/90 transition-all glow-box-purple"
