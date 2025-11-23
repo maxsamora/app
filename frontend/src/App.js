@@ -8,8 +8,8 @@ function App() {
   const [gameState, setGameState] = useState("start");
   const [musicPlaying, setMusicPlaying] = useState(false);
   const [volume, setVolume] = useState(0.3);
-  const [muted, setMuted] = useState(false);
-  const [showPlayButton, setShowPlayButton] = useState(false);
+  const [muted, setMuted] = useState(true);
+  const [showPlayButton, setShowPlayButton] = useState(true);
 
   // Audio references
   const audioRef = useRef(null);        // intro music (Friends)
