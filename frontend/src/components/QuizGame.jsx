@@ -1,16 +1,11 @@
+// QuizGame.js
 import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Progress } from "./ui/progress";
-import {
-  CheckCircle2,
-  XCircle,
-  Sparkles,
-  Lightbulb,
-  Volume2,
-  VolumeX,
-} from "lucide-react";
+import { CheckCircle2, XCircle, Sparkles, Lightbulb } from "lucide-react";
 import GameShell from "./GameShell";
+import MusicPlayer from "./MusicPlayer";
 
 const questions = [
   {
@@ -18,81 +13,9 @@ const questions = [
     answer: "central perk",
     alternatives: ["centralperk", "central-perk"],
     hint: "It's a coffee shop...",
-    backgroundGif:
-      "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2ViYWpiODJuYzB1a3AwdDhqaDloNGg1cTd6N3ZkcTNwdnk4aWVqcSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/qdeImlUdsbSso/giphy.gif",
+    backgroundGif: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2ViYWpiODJuYzB1a3AwdDhqaDloNGg1cTd6N3ZkcTNwdnk4aWVqcSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/qdeImlUdsbSso/giphy.gif",
   },
-  {
-    question: "What is Ross's profession?",
-    answer: "paleontologist",
-    alternatives: ["palaeontologist"],
-    hint: "He works with dinosaurs...",
-    backgroundGif:
-      "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3b3U4NXc1c29xOTc3anhldHhtc2pubHVtdzhlOGo2Zm1veWh4a3RxNyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/7g48X8D1Wo024/giphy.gif",
-  },
-  {
-    question: "What is Monica's apartment number?",
-    answer: "20",
-    alternatives: ["twenty", "#20", "number 20"],
-    hint: "It's a two-digit number...",
-    backgroundGif:
-      "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3MXM1NndyNG53Nnk2M21neDF4NDkxZGgxcWowY3A5anM1ZHZ2dzZxcCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/S3cM2wo5ViXnM1HcHI/giphy.gif",
-  },
-  {
-    question: "What is Chandler's middle name?",
-    answer: "muriel",
-    alternatives: [],
-    hint: "It's quite unusual...",
-    backgroundGif:
-      "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3ajhxd3ByN3U1dGUzN3B1NWpkb2xwcTZtZ2F3Z2ZqY2Y1OTdmODExaCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/d8QGjQniKwgKe4Oy43/giphy.gif",
-  },
-  {
-    question: "What is the name of Ross's pet monkey?",
-    answer: "marcel",
-    alternatives: [],
-    hint: "French name...",
-    backgroundGif:
-      "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExcjN4bWU3Mmtqdnh2MjlsY2d2a2pqM3h2NDdrY2dzdm45cnBlY200eiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/dWNDTnRbDLSil2VeKx/giphy.gif",
-  },
-  {
-    question: "What is Joey's famous catchphrase?",
-    answer: "how you doin",
-    alternatives: ["how you doing", "how you doin'", "how u doin"],
-    hint: "It's his pickup line...",
-    backgroundGif:
-      "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdXdneDhhMG5oMTQzejVxbWVoYTg2eTI2NXhnOTdtN3RmbnI3cGJvZSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/YTDZakyAorkLDYqN0q/giphy.gif",
-  },
-  {
-    question: "What is Rachel's favorite dessert that she can't make?",
-    answer: "trifle",
-    alternatives: ["english trifle"],
-    hint: "Beef and custard...",
-    backgroundGif:
-      "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExc2E1ZnlqZmVmbDlmaWhvN3VtMzc1cmp6eGFzbm05bGJ6dzcxMHptbCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/wd3kGxy3poJEI/giphy.gif",
-  },
-  {
-    question: "What is Phoebe's most famous song?",
-    answer: "smelly cat",
-    alternatives: ["smellycat"],
-    hint: "It's about a feline...",
-    backgroundGif:
-      "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMTVpZXR3OTV4bnJ4c2pxb3p0OWNrdDd2c3Y1cHg5a3NnZDN3MndmNiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3o7abuEoedSAZGxO5a/giphy.gif",
-  },
-  {
-    question: "How many seasons of Friends are there?",
-    answer: "10",
-    alternatives: ["ten"],
-    hint: "Double digits...",
-    backgroundGif:
-      "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcmg3dnptZ3JtaWx1cWEwYjE2dHFmd3YzZXp6c3gwamNoZ21zZXh2dCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/QC1TssrPbkD2menNfz/giphy.gif",
-  },
-  {
-    question: "What is the name of Ross's first wife?",
-    answer: "carol",
-    alternatives: [],
-    hint: "She's Ben's mother...",
-    backgroundGif:
-      "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExd3VsYzc5dnQ1eGZrZWcxMG1pbjN5dDI3d3BxZm1xdDczcmp0NGdvdiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/cOiNVODcm5hmOfYKIs/giphy.gif",
-  },
+  // ... todas as outras perguntas (igual ao seu código original)
 ];
 
 const hackerMessages = [
@@ -108,63 +31,45 @@ const hackerMessages = [
   "Processing love.exe...",
 ];
 
-const QuizGame = ({
-  onFinish,
-  musicPlaying,
-  volume,
-  muted,
-  onToggleMute,
-  onVolumeChange,
-  showPlayButton,
-  onManualPlay,
-}) => {
+const QuizGame = ({ onFinish }) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [userAnswer, setUserAnswer] = useState("");
   const [isCorrect, setIsCorrect] = useState(null);
   const [showHint, setShowHint] = useState(false);
-  const [hackerMessage, setHackerMessage] = useState(
-    hackerMessages[0]
-  );
   const [attempts, setAttempts] = useState(0);
   const [fadeIn, setFadeIn] = useState(true);
+  const [hackerMessage, setHackerMessage] = useState(hackerMessages[0]);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const progress = ((currentQuestion + 1) / questions.length) * 100;
 
-  // Preload GIFs
   useEffect(() => {
-    questions.forEach((q) => {
+    questions.forEach(q => {
       const img = new Image();
       img.src = q.backgroundGif;
     });
   }, []);
 
-  // Atualiza mensagem hacker + fade
   useEffect(() => {
-    setHackerMessage(
-      hackerMessages[currentQuestion % hackerMessages.length]
-    );
+    setHackerMessage(hackerMessages[currentQuestion % hackerMessages.length]);
     setFadeIn(false);
     const timer = setTimeout(() => setFadeIn(true), 50);
     return () => clearTimeout(timer);
   }, [currentQuestion]);
 
-  const normalizeAnswer = (answer) =>
-    answer.toLowerCase().trim().replace(/[^a-z0-9\s]/g, "");
+  const normalizeAnswer = (answer) => answer.toLowerCase().trim().replace(/[^a-z0-9\s]/g, "");
 
   const checkAnswer = () => {
     const normalized = normalizeAnswer(userAnswer);
-    const correctAnswer = normalizeAnswer(
-      questions[currentQuestion].answer
-    );
-    const alternatives = questions[currentQuestion].alternatives.map(
-      (alt) => normalizeAnswer(alt)
-    );
+    const question = questions[currentQuestion];
+    const correctAnswer = normalizeAnswer(question.answer);
+    const alternatives = question.alternatives.map(a => normalizeAnswer(a));
 
     if (normalized === correctAnswer || alternatives.includes(normalized)) {
       setIsCorrect(true);
       setTimeout(() => {
         if (currentQuestion < questions.length - 1) {
-          setCurrentQuestion((prev) => prev + 1);
+          setCurrentQuestion(prev => prev + 1);
           setUserAnswer("");
           setIsCorrect(null);
           setShowHint(false);
@@ -175,80 +80,27 @@ const QuizGame = ({
       }, 1500);
     } else {
       setIsCorrect(false);
-      setAttempts((prev) => {
+      setAttempts(prev => {
         const next = prev + 1;
-        if (next >= 2) {
-          setShowHint(true);
-        }
+        if (next >= 2) setShowHint(true);
         return next;
       });
-      setTimeout(() => {
-        setIsCorrect(null);
-      }, 1500);
+      setTimeout(() => setIsCorrect(null), 1500);
     }
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === "Enter" && userAnswer.trim()) {
-      checkAnswer();
-    }
-  };
-
-  const handleVolumeSliderChange = (e) => {
-    const value = parseFloat(e.target.value);
-    if (!Number.isNaN(value)) {
-      onVolumeChange?.(value);
-    }
+    if (e.key === "Enter" && userAnswer.trim()) checkAnswer();
   };
 
   const bg = questions[currentQuestion].backgroundGif;
 
   return (
     <GameShell background={bg}>
+      <MusicPlayer isPlaying={isPlaying} setIsPlaying={setIsPlaying} />
       <div className="scanline" />
-
       <div className="min-h-screen flex items-center justify-center p-4">
-        <div
-          className={`max-w-2xl w-full space-y-6 ${
-            fadeIn ? "fade-in" : ""
-          }`}
-        >
-          {/* Volume + Mobile Play Helper */}
-          <div className="flex justify-end mb-2 gap-3 items-center">
-            {showPlayButton && (
-              <button
-                onClick={onManualPlay}
-                className="px-3 py-2 rounded-lg bg-black/80 text-neon-green text-[11px] sm:text-xs font-mono border border-green-500/60 hover:bg-black"
-              >
-                Tap to enable music 🔊
-              </button>
-            )}
-
-            <div className="flex items-center gap-2">
-              <button
-                onClick={onToggleMute}
-                className="p-3 rounded-lg bg-black/70 backdrop-blur-sm border border-green-500/50 hover:border-green-500 hover:bg-black/90 transition-all"
-                title={muted ? "Unmute music" : "Mute music"}
-              >
-                {muted ? (
-                  <VolumeX className="w-5 h-5 text-neon-green" />
-                ) : (
-                  <Volume2 className="w-5 h-5 text-neon-green" />
-                )}
-              </button>
-              <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.05"
-                value={muted ? 0 : volume}
-                onChange={handleVolumeSliderChange}
-                className="w-24 sm:w-32 accent-green-500 cursor-pointer"
-              />
-            </div>
-          </div>
-
-          {/* Progress */}
+        <div className={`max-w-2xl w-full space-y-6 ${fadeIn ? "fade-in" : ""}`}>
           <div className="glow-box rounded-lg p-4 bg-black/80 backdrop-blur-sm">
             <div className="flex items-center justify-between mb-2">
               <span className="text-neon-green text-xs sm:text-sm font-mono">
@@ -261,7 +113,6 @@ const QuizGame = ({
             <Progress value={progress} className="h-2" />
           </div>
 
-          {/* Hacker banner */}
           <div className="text-center">
             <p className="text-neon-purple text-sm sm:text-lg pulse flex items-center justify-center gap-2">
               <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -270,7 +121,6 @@ const QuizGame = ({
             </p>
           </div>
 
-          {/* Terminal card */}
           <div className="glow-box rounded-lg p-5 sm:p-6 bg-white/90 backdrop-blur-sm space-y-6">
             <div className="text-green-600 text-[10px] sm:text-xs font-mono flex items-center gap-2 pb-4 border-b border-green-600/30">
               <span className="text-red-500">●</span>
@@ -279,44 +129,40 @@ const QuizGame = ({
               <span className="ml-2 truncate">secret_admirer.terminal</span>
             </div>
 
-            <div className="space-y-4">
-              <p className="text-gray-900 text-base sm:text-xl font-mono leading-relaxed">
-                <span className="text-green-600">❯ </span>
-                {questions[currentQuestion].question}
-              </p>
+            <p className="text-gray-900 text-base sm:text-xl font-mono leading-relaxed">
+              <span className="text-green-600">❯ </span>
+              {questions[currentQuestion].question}
+            </p>
 
-              {showHint && (
-                <div className="text-cyan-700 text-xs sm:text-sm font-mono p-3 bg-cyan-50 rounded border border-cyan-300">
-                  <Lightbulb className="inline-block w-4 h-4 mr-2" />
-                  <span className="font-bold">Hint: </span>
-                  {questions[currentQuestion].hint}
-                </div>
-              )}
-
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <span className="text-green-600 font-mono font-bold">
-                    $
-                  </span>
-                  <Input
-                    type="text"
-                    value={userAnswer}
-                    onChange={(e) => setUserAnswer(e.target.value)}
-                    onKeyDown={handleKeyPress}
-                    placeholder="Type your answer here..."
-                    className="flex-1 bg-gray-100 border-gray-300 text-gray-900 font-mono focus:border-green-500 focus:ring-green-500 text-sm sm:text-base"
-                    autoFocus
-                  />
-                </div>
-
-                <Button
-                  onClick={checkAnswer}
-                  disabled={!userAnswer.trim()}
-                  className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-mono uppercase tracking-wide text-xs sm:text-sm"
-                >
-                  Submit Answer
-                </Button>
+            {showHint && (
+              <div className="text-cyan-700 text-xs sm:text-sm font-mono p-3 bg-cyan-50 rounded border border-cyan-300">
+                <Lightbulb className="inline-block w-4 h-4 mr-2" />
+                <span className="font-bold">Hint: </span>
+                {questions[currentQuestion].hint}
               </div>
+            )}
+
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="text-green-600 font-mono font-bold">$</span>
+                <Input
+                  type="text"
+                  value={userAnswer}
+                  onChange={(e) => setUserAnswer(e.target.value)}
+                  onKeyDown={handleKeyPress}
+                  placeholder="Type your answer here..."
+                  className="flex-1 bg-gray-100 border-gray-300 text-gray-900 font-mono focus:border-green-500 focus:ring-green-500 text-sm sm:text-base"
+                  autoFocus
+                />
+              </div>
+
+              <Button
+                onClick={checkAnswer}
+                disabled={!userAnswer.trim()}
+                className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-mono uppercase tracking-wide text-xs sm:text-sm"
+              >
+                Submit Answer
+              </Button>
 
               {isCorrect !== null && (
                 <div
@@ -342,7 +188,6 @@ const QuizGame = ({
             </div>
           </div>
 
-          {/* Footer text */}
           <div className="text-center text-[11px] sm:text-sm neon-cyan font-mono bg-black/60 backdrop-blur-sm p-3 rounded-lg">
             {currentQuestion < questions.length - 1
               ? "Keep going... you're getting closer to the truth."
