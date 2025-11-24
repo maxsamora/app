@@ -126,8 +126,7 @@ const StartScreen = ({ onStart }) => {
                 Happy Birthday, Solène Delacour
               </p>
               <p className="text-sm sm:text-base text-neon-cyan">
-                Let&apos;s play a little hacker game to find out who sent you
-                these present
+                Let’s play a hacker game and find out who wasted way too many hours making this for you.😄💚
               </p>
             </div>
 
