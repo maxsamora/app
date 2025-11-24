@@ -1,184 +1,91 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import "./App.css";
 import StartScreen from "./components/StartScreen";
 import QuizGame from "./components/QuizGame";
 import FinalScreen from "./components/FinalScreen";
+import MusicPlayer from "./components/MusicPlayer";
 
 function App() {
-  const [gameState, setGameState] = useState("start");
+  const [gameState, setGameState] = useState("start"); // 'start' | 'quiz' | 'final'
+
+  // Global music state
+  const [musicTrack, setMusicTrack] = useState("none"); // 'none' | 'intro' | 'final'
   const [musicPlaying, setMusicPlaying] = useState(false);
   const [volume, setVolume] = useState(0.3);
   const [muted, setMuted] = useState(false);
-  const [showPlayButton, setShowPlayButton] = useState(false);
+  const [showPlayButton, setShowPlayButton] = useState(false); // "Tap to enable music" flag
 
-  // Audio references
-  const audioRef = useRef(null);        // intro music
-  const finalMusicRef = useRef(null);   // final music
-
-  // Music URLs
-  const musicUrl =
-    "https://www.dropbox.com/scl/fi/d73otllr72ty69p8cdxa2/I-ll-Be-There-For-You.mp3?dl=1";
-
-  const finalMusicUrl =
-    "https://www.dropbox.com/scl/fi/qtj81txbcvwx96uopptl5/One-Dance.mp3?dl=1";
-
-  // Sync volume and mute with both players
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = muted ? 0 : volume;
-    }
-    if (finalMusicRef.current) {
-      finalMusicRef.current.volume = muted ? 0 : volume;
-    }
-  }, [volume, muted]);
-
-  // Manual play button (used mainly on mobile)
-  const handleManualPlay = () => {
-    if (!audioRef.current) return;
-
-    setMuted(false);
-    setMusicPlaying(true);
-    audioRef.current.currentTime = 0;
-
-    try {
-      const playResult = audioRef.current.play();
-      if (playResult && typeof playResult.then === "function") {
-        playResult
-          .then(() => {
-            console.log("Intro music started manually.");
-            setShowPlayButton(false);
-          })
-          .catch((err) => {
-            console.log("Manual play failed:", err);
-          });
-      } else {
-        // Older browsers may not return a promise
-        console.log("Intro music started manually (no promise).");
-        setShowPlayButton(false);
-      }
-    } catch (err) {
-      console.log("Manual play threw an error:", err);
-    }
-  };
-
-  // Start game from StartScreen
+  // Called when the user clicks the Start button on StartScreen
   const startGame = () => {
-    // User gesture happens here
-    setMuted(false);
-    setMusicPlaying(true);
-
-    // ALWAYS go to quiz screen, even if audio fails
+    // user gesture happens here
     setGameState("quiz");
 
-    if (!audioRef.current) return;
-
-    audioRef.current.currentTime = 0;
-
-    try {
-      const playResult = audioRef.current.play();
-
-      if (playResult && typeof playResult.then === "function") {
-        playResult
-          .then(() => {
-            console.log("Intro music started on user interaction.");
-            setShowPlayButton(false);
-          })
-          .catch((err) => {
-            console.log(
-              "Autoplay blocked or failed, showing manual play button.",
-              err
-            );
-            setShowPlayButton(true);
-          });
-      } else {
-        // Older Safari / browsers that don't return a promise
-        console.log("Intro music started on user interaction (no promise).");
-        setShowPlayButton(false);
-      }
-    } catch (err) {
-      console.log(
-        "Intro music play threw an error, showing manual play button.",
-        err
-      );
-      setShowPlayButton(true);
-    }
+    setMuted(false);
+    setMusicTrack("intro");   // Friends theme
+    setMusicPlaying(true);    // let MusicPlayer try to play
+    setShowPlayButton(false); // MusicPlayer will set true if autoplay is blocked
   };
 
-  // After finishing all quiz questions
+  // Called when the quiz is completed
   const finishGame = () => {
     setGameState("final");
 
-    // Stop intro music
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-    }
-
-    // Play final music
-    if (finalMusicRef.current) {
-      finalMusicRef.current.currentTime = 0;
-
-      try {
-        const playResult = finalMusicRef.current.play();
-
-        if (playResult && typeof playResult.then === "function") {
-          playResult
-            .then(() => console.log("Final music started."))
-            .catch((err) => console.log("Final music blocked:", err));
-        } else {
-          console.log("Final music started (no promise).");
-        }
-      } catch (err) {
-        console.log("Final music play threw an error:", err);
-      }
-    }
+    // switch to final track
+    setMusicTrack("final");   // One Dance (or whatever you set in MusicPlayer)
+    setMusicPlaying(true);
+    setMuted(false);
   };
 
-  // Restart whole game
+  // Called when the game is restarted from the final screen
   const restartGame = () => {
-    if (finalMusicRef.current) {
-      finalMusicRef.current.pause();
-      finalMusicRef.current.currentTime = 0;
-    }
+    setGameState("start");
 
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-    }
-
+    setMusicTrack("none");
     setMusicPlaying(false);
     setMuted(false);
     setVolume(0.3);
     setShowPlayButton(false);
-    setGameState("start");
   };
 
-  const toggleMute = () => setMuted((prev) => !prev);
+  // Toggle mute state (used by QuizGame / FinalScreen)
+  const toggleMute = () => {
+    setMuted((prev) => !prev);
+  };
 
+  // Volume slider handler (QuizGame / FinalScreen)
   const handleVolumeChange = (newVolume) => {
     setVolume(newVolume);
-    if (newVolume > 0) setMuted(false);
+    if (newVolume > 0) {
+      setMuted(false);
+    }
+  };
+
+  // Called by MusicPlayer when autoplay is blocked (typical on mobile Safari)
+  const handleAutoplayBlocked = () => {
+    setShowPlayButton(true); // QuizGame can show "Tap to enable music 🔊"
+    setMusicPlaying(false);
+  };
+
+  // Manual play triggered from QuizGame / FinalScreen "Tap to enable music" button
+  const handleManualPlay = () => {
+    // Just tell MusicPlayer to start again
+    setMuted(false);
+    setMusicPlaying(true);
+    setShowPlayButton(false);
   };
 
   return (
-    <div className="App">
-      {/* Intro Music */}
-      <audio
-        ref={audioRef}
-        src={musicUrl}
-        loop
-        preload="auto"
-        playsInline   // important for Safari mobile
+    <div className="App relative min-h-screen overflow-hidden">
+      {/* Global background music controller (no UI here, just logic) */}
+      <MusicPlayer
+        track={musicTrack}              // 'none' | 'intro' | 'final'
+        playing={musicPlaying}          // boolean
+        volume={volume}                 // 0–1
+        muted={muted}                   // boolean
+        onAutoplayBlocked={handleAutoplayBlocked}
       />
 
-      {/* Final Music */}
-      <audio
-        ref={finalMusicRef}
-        src={finalMusicUrl}
-        preload="auto"
-        playsInline
-      />
-
+      {/* Screens */}
       {gameState === "start" && <StartScreen onStart={startGame} />}
 
       {gameState === "quiz" && (
