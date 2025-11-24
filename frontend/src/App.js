@@ -8,22 +8,21 @@ function App() {
   const [gameState, setGameState] = useState("start");
   const [musicPlaying, setMusicPlaying] = useState(false);
   const [volume, setVolume] = useState(0.3);
-  const [muted, setMuted] = useState(true);
-  const [showPlayButton, setShowPlayButton] = useState(true);
+  const [muted, setMuted] = useState(false);          
+  const [showPlayButton, setShowPlayButton] = useState(false); 
 
   // Audio references
-  const audioRef = useRef(null);        // intro music (Friends)
-  const finalMusicRef = useRef(null);   // final music (One Dance / etc.)
+  const audioRef = useRef(null);        
+  const finalMusicRef = useRef(null);   
 
-  // Intro music (Friends)
+  // Music URLs
   const musicUrl =
     "https://www.dropbox.com/scl/fi/d73otllr72ty69p8cdxa2/I-ll-Be-There-For-You.mp3?dl=1";
 
-  // Final music (One Dance, ou o que você colocou aí)
   const finalMusicUrl =
     "https://www.dropbox.com/scl/fi/qtj81txbcvwx96uopptl5/One-Dance.mp3?dl=1";
 
-  // Sincroniza volume/mute com os dois players
+  // Sync volume and mute with both players
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = muted ? 0 : volume;
@@ -33,17 +32,19 @@ function App() {
     }
   }, [volume, muted]);
 
-  // NÃO vamos mais tentar autoplay só via useEffect.
-  // O play precisa ser chamado direto no clique (startGame / handleManualPlay) no mobile.
-
+  // Manual play button (Safari mobile)
   const handleManualPlay = () => {
     if (!audioRef.current) return;
 
+    setMuted(false);
     setMusicPlaying(true);
+
+    audioRef.current.currentTime = 0;
+
     audioRef.current
       .play()
       .then(() => {
-        console.log("Intro music manually started");
+        console.log("Intro music started manually.");
         setShowPlayButton(false);
       })
       .catch((err) => {
@@ -51,51 +52,60 @@ function App() {
       });
   };
 
+  // Start game from StartScreen
   const startGame = () => {
-    setGameState("quiz");
+    // User gesture happens here
+    setMuted(false);
     setMusicPlaying(true);
 
     if (audioRef.current) {
+      audioRef.current.currentTime = 0;
+
       audioRef.current
         .play()
         .then(() => {
-          console.log("Intro music started on user interaction");
+          console.log("Intro music started on user interaction.");
           setShowPlayButton(false);
+          setGameState("quiz");
         })
         .catch((err) => {
-          console.log("Mobile blocked autoplay, need manual tap:", err);
-          setShowPlayButton(true); // mostra botão "tap to enable music"
+          console.log("Autoplay blocked on mobile. Need manual tap.", err);
+          setShowPlayButton(true); 
+          setGameState("quiz");
         });
+    } else {
+      setGameState("quiz");
     }
   };
 
+  // After finishing all quiz questions
   const finishGame = () => {
     setGameState("final");
 
-    // Para intro
+    // Stop intro music
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
     }
 
-    // Toca música final
+    // Play final music
     if (finalMusicRef.current) {
       finalMusicRef.current.currentTime = 0;
+
       finalMusicRef.current
         .play()
-        .then(() => console.log("Final music started"))
+        .then(() => console.log("Final music started."))
         .catch((err) => console.log("Final music blocked:", err));
     }
   };
 
+  // Restart whole game
   const restartGame = () => {
-    // Para música final
     if (finalMusicRef.current) {
       finalMusicRef.current.pause();
       finalMusicRef.current.currentTime = 0;
     }
 
-    // Reseta intro
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
@@ -118,10 +128,21 @@ function App() {
   return (
     <div className="App">
       {/* Intro Music */}
-      <audio ref={audioRef} src={musicUrl} loop preload="auto" />
+      <audio
+        ref={audioRef}
+        src={musicUrl}
+        loop
+        preload="auto"
+        playsInline   // Required for Safari mobile
+      />
 
       {/* Final Music */}
-      <audio ref={finalMusicRef} src={finalMusicUrl} preload="auto" />
+      <audio
+        ref={finalMusicRef}
+        src={finalMusicUrl}
+        preload="auto"
+        playsInline
+      />
 
       {gameState === "start" && <StartScreen onStart={startGame} />}
 
@@ -153,3 +174,5 @@ function App() {
     </div>
   );
 }
+
+export default App;
