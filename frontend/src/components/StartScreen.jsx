@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
-import { Heart, Terminal } from "lucide-react";
+import { Heart, Terminal, Volume2 } from "lucide-react";
 import GameShell from "./GameShell";
 
 const StartScreen = ({ onStart }) => {
@@ -46,7 +46,7 @@ const StartScreen = ({ onStart }) => {
     <GameShell background="https://media4.giphy.com/media/3OHA2GuEih6zphHvNI/giphy.gif">
       <div className="scanline" />
 
-      {/* linhas verdes suaves */}
+      {/* pequeno efeito de linhas verdes, mantido mas suavizado */}
       <div className="absolute inset-0 opacity-10 pointer-events-none">
         <div
           className="absolute inset-0"
@@ -126,7 +126,12 @@ const StartScreen = ({ onStart }) => {
                 Happy Birthday, Solène Delacour
               </p>
               <p className="text-sm sm:text-base text-neon-cyan">
-                Let’s play a hacker game and find out who wasted way too many hours making this for you.😄💚
+                Let&apos;s play a hacker game and find out who wasted way too many
+                hours making this for you. 😄💚{" "}
+                <span className="inline-flex items-center gap-1 mt-1">
+                  And don&apos;t forget to enable the music with the volume icon at the top.
+                  <Volume2 className="w-4 h-4 text-neon-green inline-block" />
+                </span>
               </p>
             </div>
 
