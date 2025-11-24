@@ -1,33 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
-import { Heart, Terminal, Volume2 } from "lucide-react";
+import { Heart, Terminal } from "lucide-react";
 import GameShell from "./GameShell";
-
-/**
- * Hook simples de typewriter (escrita lenta)
- */
-function useTypewriter(text = "", speed = 70) { // 👈 mais lento (era 45)
-  const [output, setOutput] = useState("");
-
-  useEffect(() => {
-    setOutput("");
-
-    if (!text) return;
-
-    let i = 0;
-    const interval = setInterval(() => {
-      setOutput((prev) => prev + text[i]);
-      i++;
-      if (i >= text.length) {
-        clearInterval(interval);
-      }
-    }, speed);
-
-    return () => clearInterval(interval);
-  }, [text, speed]);
-
-  return output;
-}
 
 const StartScreen = ({ onStart }) => {
   const [showSubtext, setShowSubtext] = useState(false);
@@ -36,20 +10,6 @@ const StartScreen = ({ onStart }) => {
   // etapas do texto cinematográfico
   const [cinemaStep, setCinemaStep] = useState(0); // 0..3
   const [cinemaDone, setCinemaDone] = useState(false);
-
-  // typewriter para cada frase (também com speed mais lento)
-  const line1 = useTypewriter(
-    cinemaStep >= 1 ? "On your birthday night…" : "",
-    70
-  );
-  const line2 = useTypewriter(
-    cinemaStep >= 2 ? "A secret admirer is running a little experiment." : "",
-    70
-  );
-  const line3 = useTypewriter(
-    cinemaStep >= 3 ? "Tonight, the code will reveal the truth." : "",
-    70
-  );
 
   useEffect(() => {
     const timer = setTimeout(() => setShowSubtext(true), 1000);
@@ -65,14 +25,14 @@ const StartScreen = ({ onStart }) => {
     };
   }, []);
 
-  // Sequência cinematográfica inicial (mais lenta também)
+  // Sequência cinematográfica inicial
   useEffect(() => {
-    const t1 = setTimeout(() => setCinemaStep(1), 1200);  // antes 800
-    const t2 = setTimeout(() => setCinemaStep(2), 4200);  // antes 3500
-    const t3 = setTimeout(() => setCinemaStep(3), 7800);  // antes 6500
+    const t1 = setTimeout(() => setCinemaStep(1), 600);   // first line
+    const t2 = setTimeout(() => setCinemaStep(2), 2200);  // second line
+    const t3 = setTimeout(() => setCinemaStep(3), 4000);  // third line
     const tDone = setTimeout(() => {
       setCinemaDone(true);
-    }, 11500); // antes 9000
+    }, 5800); // depois disso, mostra o conteúdo normal
 
     return () => {
       clearTimeout(t1);
@@ -98,23 +58,23 @@ const StartScreen = ({ onStart }) => {
         />
       </div>
 
-      {/* OVERLAY CINEMATOGRÁFICO COM TYPEWRITER */}
+      {/* OVERLAY CINEMATOGRÁFICO */}
       {!cinemaDone && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/85 backdrop-blur-sm z-20">
           <div className="text-center max-w-xl px-6">
             {cinemaStep >= 1 && (
               <p className="cinema-text mb-3 text-base sm:text-2xl">
-                {line1}
+                On your birthday night…
               </p>
             )}
             {cinemaStep >= 2 && (
               <p className="cinema-text mb-3 text-base sm:text-2xl">
-                {line2}
+                A secret admirer is running a little experiment.
               </p>
             )}
             {cinemaStep >= 3 && (
               <p className="cinema-title text-2xl sm:text-4xl mt-4">
-                {line3}
+                Tonight, the code will reveal the truth.
               </p>
             )}
           </div>
@@ -166,12 +126,8 @@ const StartScreen = ({ onStart }) => {
                 Happy Birthday, Solène Delacour
               </p>
               <p className="text-sm sm:text-base text-neon-cyan">
-                Let's play a hacker game and find out who wasted way too many
-                hours making this for you. 😄💚{" "}
-                <span className="inline-flex items-center gap-1 mt-1">
-                  And don&apos;t forget to enable the music with the volume icon at the top.
-                  <Volume2 className="w-4 h-4 text-neon-green inline-block" />
-                </span>
+                Let&apos;s play a little hacker game to find out who sent you
+                these present
               </p>
             </div>
 
