@@ -393,7 +393,7 @@ const FinalScreen = ({
                 <div className="text-neon-cyan text-sm sm:text-lg font-mono space-y-1">
                   <p>ACCESS GRANTED TO MY HEART</p>
                   <p className="text-xs sm:text-sm mt-1 opacity-75">
-                    System breach successful... love protocol is now running in the background.
+                    System breach successful... protocol is now running in the background.
                   </p>
                 </div>
               </div>
