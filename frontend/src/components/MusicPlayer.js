@@ -1,49 +1,78 @@
-// MusicPlayer.js
-import { useEffect, useRef, useState } from "react";
-import { Button } from "./ui/button";
-import { Volume2, VolumeX } from "lucide-react";
+import { useEffect, useRef } from "react";
 
-const MusicPlayer = ({ isPlaying, setIsPlaying }) => {
+// Map track names to audio URLs
+const TRACK_URLS = {
+  intro:
+    "https://www.dropbox.com/scl/fi/d73otllr72ty69p8cdxa2/I-ll-Be-There-For-You.mp3?dl=1",
+  final:
+    "https://www.dropbox.com/scl/fi/qtj81txbcvwx96uopptl5/One-Dance.mp3?dl=1",
+};
+
+function MusicPlayer({ track, playing, volume, muted, onAutoplayBlocked }) {
   const audioRef = useRef(null);
-  const [volume, setVolume] = useState(0.2);
 
+  // Sync volume and mute
   useEffect(() => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.play().catch(err => {
-          console.log("Autoplay bloqueado. Interação do usuário necessária:", err);
-        });
-      } else {
-        audioRef.current.pause();
-      }
+    if (!audioRef.current) return;
+    audioRef.current.volume = muted ? 0 : volume;
+  }, [volume, muted]);
+
+  // React to track / playing changes
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    // If no track or not playing, pause
+    if (!track || track === "none" || !playing) {
+      audio.pause();
+      return;
     }
-  }, [isPlaying]);
 
-  useEffect(() => {
-    if (audioRef.current) audioRef.current.volume = volume;
-  }, [volume]);
+    const url = TRACK_URLS[track];
+    if (!url) {
+      audio.pause();
+      return;
+    }
 
-  const toggleMusic = () => setIsPlaying(!isPlaying);
+    // Set correct src if needed
+    if (audio.src !== url) {
+      audio.src = url;
+    }
+
+    // Restart from beginning
+    audio.currentTime = 0;
+
+    try {
+      const result = audio.play();
+
+      // Modern browsers return a Promise
+      if (result && typeof result.then === "function") {
+        result
+          .then(() => {
+            // Successfully playing
+          })
+          .catch((err) => {
+            console.log("Autoplay blocked or failed:", err);
+            onAutoplayBlocked?.();
+          });
+      } else {
+        // Older browsers (no Promise)
+        console.log("Audio started (no Promise support).");
+      }
+    } catch (err) {
+      console.log("Error calling play():", err);
+      onAutoplayBlocked?.();
+    }
+  }, [track, playing, onAutoplayBlocked]);
 
   return (
-    <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
-      <audio ref={audioRef} loop preload="auto" src="/one-dance-instrumental.mp3" />
-      <Button onClick={toggleMusic} size="sm" variant="ghost">
-        {isPlaying ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
-      </Button>
-      {isPlaying && (
-        <input
-          type="range"
-          min="0"
-          max="1"
-          step="0.05"
-          value={volume}
-          onChange={(e) => setVolume(parseFloat(e.target.value))}
-          className="w-24 cursor-pointer"
-        />
-      )}
-    </div>
+    <audio
+      ref={audioRef}
+      preload="auto"
+      loop
+      playsInline // important for Safari on iOS
+    />
   );
-};
+}
 
 export default MusicPlayer;
