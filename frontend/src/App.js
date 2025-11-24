@@ -6,53 +6,47 @@ import FinalScreen from "./components/FinalScreen";
 import MusicPlayer from "./components/MusicPlayer";
 
 function App() {
-  const [gameState, setGameState] = useState("start"); // 'start' | 'quiz' | 'final'
+  // Screens: 'start' | 'quiz' | 'final'
+  const [gameState, setGameState] = useState("start");
 
-  // Global music state
-  const [musicTrack, setMusicTrack] = useState("none"); // 'none' | 'intro' | 'final'
-  const [musicPlaying, setMusicPlaying] = useState(false);
+  // Global music state (same idea as the working site)
+  const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const [volume, setVolume] = useState(0.3);
   const [muted, setMuted] = useState(false);
-  const [showPlayButton, setShowPlayButton] = useState(false); // "Tap to enable music" flag
 
-  // Called when the user clicks the Start button on StartScreen
+  // If you still want the "Tap to enable music" button inside QuizGame:
+  const [showPlayButton, setShowPlayButton] = useState(false);
+
+  // Called when user clicks the start button on StartScreen
   const startGame = () => {
-    // user gesture happens here
     setGameState("quiz");
-
     setMuted(false);
-    setMusicTrack("intro");   // Friends theme
-    setMusicPlaying(true);    // let MusicPlayer try to play
-    setShowPlayButton(false); // MusicPlayer will set true if autoplay is blocked
+    setIsMusicPlaying(true);      // tells MusicPlayer to start
+    setShowPlayButton(false);     // we only show this if autoplay fails
   };
 
-  // Called when the quiz is completed
+  // Called when QuizGame finishes all questions
   const finishGame = () => {
     setGameState("final");
-
-    // switch to final track
-    setMusicTrack("final");   // One Dance (or whatever you set in MusicPlayer)
-    setMusicPlaying(true);
-    setMuted(false);
+    // You can keep background music playing or stop it here:
+    // setIsMusicPlaying(false);
   };
 
-  // Called when the game is restarted from the final screen
+  // Called when user restarts from FinalScreen
   const restartGame = () => {
     setGameState("start");
-
-    setMusicTrack("none");
-    setMusicPlaying(false);
+    setIsMusicPlaying(false);
     setMuted(false);
     setVolume(0.3);
     setShowPlayButton(false);
   };
 
-  // Toggle mute state (used by QuizGame / FinalScreen)
+  // Mute toggle used in QuizGame / FinalScreen
   const toggleMute = () => {
     setMuted((prev) => !prev);
   };
 
-  // Volume slider handler (QuizGame / FinalScreen)
+  // Volume slider handler used in QuizGame / FinalScreen
   const handleVolumeChange = (newVolume) => {
     setVolume(newVolume);
     if (newVolume > 0) {
@@ -60,38 +54,33 @@ function App() {
     }
   };
 
-  // Called by MusicPlayer when autoplay is blocked (typical on mobile Safari)
-  const handleAutoplayBlocked = () => {
-    setShowPlayButton(true); // QuizGame can show "Tap to enable music 🔊"
-    setMusicPlaying(false);
-  };
-
-  // Manual play triggered from QuizGame / FinalScreen "Tap to enable music" button
+  // Called when "Tap to enable music" is clicked in QuizGame / FinalScreen
   const handleManualPlay = () => {
-    // Just tell MusicPlayer to start again
     setMuted(false);
-    setMusicPlaying(true);
+    setIsMusicPlaying(true);    // let MusicPlayer try again
     setShowPlayButton(false);
   };
 
+  // If you quiser usar showPlayButton de verdade:
+  // você pode fazer o MusicPlayer chamar algo como `onAutoplayBlocked`
+  // e aí você faz setShowPlayButton(true). Por enquanto, vamos manter simples.
+
   return (
     <div className="App relative min-h-screen overflow-hidden">
-      {/* Global background music controller (no UI here, just logic) */}
+      {/* Global background music controller, like in the working site */}
       <MusicPlayer
-        track={musicTrack}              // 'none' | 'intro' | 'final'
-        playing={musicPlaying}          // boolean
-        volume={volume}                 // 0–1
-        muted={muted}                   // boolean
-        onAutoplayBlocked={handleAutoplayBlocked}
+        isPlaying={isMusicPlaying}
+        setIsPlaying={setIsMusicPlaying}
+        volume={volume}
+        muted={muted}
       />
 
-      {/* Screens */}
       {gameState === "start" && <StartScreen onStart={startGame} />}
 
       {gameState === "quiz" && (
         <QuizGame
           onFinish={finishGame}
-          musicPlaying={musicPlaying}
+          musicPlaying={isMusicPlaying}
           volume={volume}
           muted={muted}
           onToggleMute={toggleMute}
@@ -103,7 +92,7 @@ function App() {
 
       {gameState === "final" && (
         <FinalScreen
-          musicPlaying={musicPlaying}
+          musicPlaying={isMusicPlaying}
           volume={volume}
           muted={muted}
           onToggleMute={toggleMute}
