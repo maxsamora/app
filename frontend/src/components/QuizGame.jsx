@@ -241,7 +241,7 @@ const QuizGame = ({
                 min="0"
                 max="1"
                 step="0.05"
-                value={muted ? 0 : volume}
+                value={volume}
                 onChange={handleVolumeSliderChange}
                 className="w-24 sm:w-32 accent-green-500 cursor-pointer"
               />
