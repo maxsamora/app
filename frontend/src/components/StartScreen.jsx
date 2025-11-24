@@ -166,7 +166,7 @@ const StartScreen = ({ onStart }) => {
                 Happy Birthday, Solène Delacour
               </p>
               <p className="text-sm sm:text-base text-neon-cyan">
-                Let&apos;s play a hacker game and find out who wasted way too many
+                Let's play a hacker game and find out who wasted way too many
                 hours making this for you. 😄💚{" "}
                 <span className="inline-flex items-center gap-1 mt-1">
                   And don&apos;t forget to enable the music with the volume icon at the top.
