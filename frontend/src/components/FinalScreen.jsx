@@ -5,15 +5,13 @@ import {
   Instagram,
   Sparkles,
   PartyPopper,
-  Volume2,
-  VolumeX,
   RotateCcw,
 } from "lucide-react";
 import GameShell from "./GameShell";
 
 // ✅ Your real data here
 const CORRECT_ANSWERS = {
-  fullName: "maxwell samora ferreira",
+  fullName: "maxwell samora ferreira", "maxwell ferreira",
   currentCountry: "australia",
   originCountry: "brazil",
   nephews: 2, // you have 2 nephews
@@ -53,14 +51,7 @@ const QUIZ_STEPS = [
   },
 ];
 
-const FinalScreen = ({
-  musicPlaying,
-  volume,
-  muted,
-  onToggleMute,
-  onVolumeChange,
-  onRestart,
-}) => {
+const FinalScreen = ({ onRestart }) => {
   const [hearts, setHearts] = useState([]);
   const [showMessage, setShowMessage] = useState(false);
   const [showButton, setShowButton] = useState(false);
@@ -113,11 +104,6 @@ const FinalScreen = ({
       clearTimeout(tDone);
     };
   }, []);
-
-  const handleVolumeChange = (e) => {
-    const value = parseFloat(e.target.value);
-    if (!Number.isNaN(value)) onVolumeChange?.(value);
-  };
 
   const openInstagram = () => {
     const url = "https://www.instagram.com/maxsamora/";
@@ -322,30 +308,6 @@ const FinalScreen = ({
 
       {/* MAIN CONTENT */}
       <div className="content-wrapper relative z-10 max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-12 text-center">
-        {/* Volume control */}
-        <div className="flex justify-end items-center gap-3 mb-4">
-          <button
-            onClick={onToggleMute}
-            className="p-3 rounded-lg bg-black/70 backdrop-blur-sm border border-purple-500/50 hover:border-purple-500 hover:bg-black/90 transition-all"
-            title={muted ? "Unmute music" : "Mute music"}
-          >
-            {muted ? (
-              <VolumeX className="w-5 h-5 neon-purple" />
-            ) : (
-              <Volume2 className="w-5 h-5 neon-purple" />
-            )}
-          </button>
-          <input
-            type="range"
-            min="0"
-            max="1"
-            step="0.05"
-            value={muted ? 0 : volume}
-            onChange={handleVolumeChange}
-            className="w-24 sm:w-32 accent-purple-500 cursor-pointer"
-          />
-        </div>
-
         {/* Celebration icon */}
         {cinemaDone && (
           <div className="mb-8 flex justify-center fade-in">
