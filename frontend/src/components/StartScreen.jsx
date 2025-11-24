@@ -7,8 +7,8 @@ const StartScreen = ({ onStart }) => {
   const [showSubtext, setShowSubtext] = useState(false);
   const [glitchActive, setGlitchActive] = useState(false);
 
-  // etapas do texto cinematográfico
-  const [cinemaStep, setCinemaStep] = useState(0); // 0..3
+  // Cinematic intro
+  const [cinemaStep, setCinemaStep] = useState(0);
   const [cinemaDone, setCinemaDone] = useState(false);
 
   useEffect(() => {
@@ -16,8 +16,8 @@ const StartScreen = ({ onStart }) => {
 
     const glitchInterval = setInterval(() => {
       setGlitchActive(true);
-      setTimeout(() => setGlitchActive(false), 200);
-    }, 3000);
+      setTimeout(() => setGlitchActive(false), 180);
+    }, 2800);
 
     return () => {
       clearTimeout(timer);
@@ -25,14 +25,12 @@ const StartScreen = ({ onStart }) => {
     };
   }, []);
 
-  // Sequência cinematográfica inicial
+  // Cinematic sequence
   useEffect(() => {
-    const t1 = setTimeout(() => setCinemaStep(1), 600);   // first line
-    const t2 = setTimeout(() => setCinemaStep(2), 2200);  // second line
-    const t3 = setTimeout(() => setCinemaStep(3), 4000);  // third line
-    const tDone = setTimeout(() => {
-      setCinemaDone(true);
-    }, 5800); // depois disso, mostra o conteúdo normal
+    const t1 = setTimeout(() => setCinemaStep(1), 600);
+    const t2 = setTimeout(() => setCinemaStep(2), 2200);
+    const t3 = setTimeout(() => setCinemaStep(3), 4000);
+    const tDone = setTimeout(() => setCinemaDone(true), 5800);
 
     return () => {
       clearTimeout(t1);
@@ -46,7 +44,7 @@ const StartScreen = ({ onStart }) => {
     <GameShell background="https://media4.giphy.com/media/3OHA2GuEih6zphHvNI/giphy.gif">
       <div className="scanline" />
 
-      {/* linhas verdes suaves */}
+      {/* Matrix scan lines */}
       <div className="absolute inset-0 opacity-10 pointer-events-none">
         <div
           className="absolute inset-0"
@@ -58,7 +56,7 @@ const StartScreen = ({ onStart }) => {
         />
       </div>
 
-      {/* OVERLAY CINEMATOGRÁFICO */}
+      {/* CINEMATIC OVERLAY */}
       {!cinemaDone && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/85 backdrop-blur-sm z-20">
           <div className="text-center max-w-xl px-6">
@@ -81,14 +79,15 @@ const StartScreen = ({ onStart }) => {
         </div>
       )}
 
+      {/* MAIN CONTENT */}
       <div className="text-center relative z-10 pt-10 sm:pt-16">
-        {/* topo com estado do sistema */}
+        {/* System top text */}
         <div className="mb-6 sm:mb-8 flex items-center justify-center gap-2 text-neon-green text-xs sm:text-sm">
           <Terminal className="w-4 h-4" />
           <span className="font-mono">SYSTEM INITIALIZING...</span>
         </div>
 
-        {/* título principal */}
+        {/* Title */}
         <div
           className={`mb-6 sm:mb-8 transition-opacity duration-700 ${
             cinemaDone ? "opacity-100" : "opacity-0"
@@ -113,31 +112,40 @@ const StartScreen = ({ onStart }) => {
           </h2>
         </div>
 
+        {/* SUBTEXT BLOCK */}
         {showSubtext && cinemaDone && (
           <div className="fade-in space-y-6 sm:space-y-8 mb-8 sm:mb-12">
-            {/* cartinha de aniversário */}
+            {/* Birthday block */}
             <div className="glow-box-purple rounded-lg p-4 sm:p-6 bg-black/60 backdrop-blur-sm max-w-xl mx-auto">
               <div className="flex items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-4">
                 <Heart className="w-5 h-5 sm:w-6 sm:h-6 neon-pink" />
                 <Heart className="w-7 h-7 sm:w-8 sm:h-8 neon-pink" />
                 <Heart className="w-5 h-5 sm:w-6 sm:h-6 neon-pink" />
               </div>
+
               <p className="text-lg sm:text-xl neon-pink mb-2 sm:mb-3">
                 Happy Birthday, Solène Delacour
               </p>
+
               <p className="text-sm sm:text-base text-neon-cyan">
-                Let&apos;s play a little hacker game to find out who sent you
-                these present
+                Let’s play a little hacker game to find out who wasted way too
+                many hours making this for you 😄💚
+                <br />
+                <span className="opacity-80">
+                  And don’t forget to enable the music using the volume icon at
+                  the top.
+                </span>
               </p>
             </div>
 
-            {/* missão */}
+            {/* Mission briefing */}
             <div className="glow-box rounded-lg p-4 sm:p-6 bg-black/60 backdrop-blur-sm max-w-xl mx-auto text-left">
               <div className="flex items-center gap-2 mb-3 sm:mb-4 neon-green">
                 <span className="font-mono text-sm sm:text-lg">
                   MISSION BRIEFING:
                 </span>
               </div>
+
               <ul className="space-y-2 text-neon-green text-xs sm:text-sm md:text-base">
                 <li className="flex items-start gap-2">
                   <span className="neon-cyan">•</span>
@@ -160,6 +168,7 @@ const StartScreen = ({ onStart }) => {
           </div>
         )}
 
+        {/* BUTTON */}
         {showSubtext && cinemaDone && (
           <div className="fade-in">
             <Button
@@ -190,12 +199,14 @@ const StartScreen = ({ onStart }) => {
               <Terminal className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
               INITIALIZE SYSTEM
             </Button>
+
             <p className="mt-3 sm:mt-4 text-[10px] sm:text-xs text-neon-cyan font-mono">
               Press to start the game
             </p>
           </div>
         )}
 
+        {/* Footer arrows */}
         <div className="mt-8 sm:mt-10 flex items-center justify-center gap-6 sm:gap-8 text-neon-green opacity-50 text-lg sm:text-xl">
           <div className="pulse">&lt;</div>
           <div className="pulse" style={{ animationDelay: "0.5s" }}>
