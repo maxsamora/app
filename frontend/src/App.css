@@ -47,6 +47,9 @@ body {
   text-shadow: 0 0 10px #ff006e, 0 0 20px #ff006e;
 }
 
+/* ─────────────────────────────── */
+/* GLITCH */
+/* ─────────────────────────────── */
 @keyframes glitch {
   0% { transform: translate(0); }
   20% { transform: translate(-2px, 2px); }
@@ -55,33 +58,27 @@ body {
   80% { transform: translate(2px, -2px); }
   100% { transform: translate(0); }
 }
+.glitch { animation: glitch 0.3s infinite; }
+.glitch-slow { animation: glitch 2s infinite; }
 
-.glitch {
-  animation: glitch 0.3s infinite;
-}
-
-.glitch-slow {
-  animation: glitch 2s infinite;
-}
-
+/* ─────────────────────────────── */
+/* PULSE & FLOAT */
+/* ─────────────────────────────── */
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.5; }
 }
-
-.pulse {
-  animation: pulse 2s ease-in-out infinite;
-}
+.pulse { animation: pulse 2s ease-in-out infinite; }
 
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-20px); }
 }
+.float { animation: float 3s ease-in-out infinite; }
 
-.float {
-  animation: float 3s ease-in-out infinite;
-}
-
+/* ─────────────────────────────── */
+/* HEARTS ANIMATION */
+/* ─────────────────────────────── */
 @keyframes hearts {
   0% {
     transform: translateY(0) scale(0);
@@ -102,11 +99,13 @@ body {
   pointer-events: none;
 }
 
+/* ─────────────────────────────── */
+/* SCANLINE */
+/* ─────────────────────────────── */
 @keyframes scan {
   0% { top: 0; }
   100% { top: 100%; }
 }
-
 .scanline {
   position: fixed;
   top: 0;
@@ -120,6 +119,9 @@ body {
   z-index: 9999;
 }
 
+/* ─────────────────────────────── */
+/* MATRIX GLOW */
+/* ─────────────────────────────── */
 .matrix-bg {
   position: fixed;
   top: 0;
@@ -141,6 +143,9 @@ body {
   border: 1px solid #b026ff;
 }
 
+/* ─────────────────────────────── */
+/* FADE-IN */
+/* ─────────────────────────────── */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -151,10 +156,7 @@ body {
     transform: translateY(0);
   }
 }
-
-.fade-in {
-  animation: fadeIn 0.8s ease-out;
-}
+.fade-in { animation: fadeIn 0.8s ease-out; }
 
 .bg-overlay {
   position: absolute;
@@ -171,22 +173,14 @@ body {
   z-index: 2;
 }
 
-::-webkit-scrollbar {
-  width: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: #0a0a0a;
-}
-
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #0a0a0a; }
 ::-webkit-scrollbar-thumb {
   background: #00ff41;
   border-radius: 5px;
 }
-
-::-webkit-scrollbar-thumb:hover {
-  background: #00cc33;
-}
+::-webkit-scrollbar-thumb:hover { background: #00cc33; }
 
 @media (max-width: 768px) {
   .neon-green,
@@ -195,13 +189,72 @@ body {
   .neon-pink {
     text-shadow: 0 0 5px currentColor, 0 0 10px currentColor;
   }
-  
   .glow-box,
   .glow-box-purple {
     box-shadow: 0 0 10px rgba(0, 255, 65, 0.2), inset 0 0 10px rgba(0, 255, 65, 0.05);
   }
-  
-  .heart {
-    font-size: 18px;
+  .heart { font-size: 18px; }
+}
+
+/* ──────────────────────────────────────────────── */
+/* 🎬 CINEMATIC MODE — FINAL SCREEN ROMÂNTICO */
+/* ──────────────────────────────────────────────── */
+
+.cinema-text {
+  opacity: 0;
+  font-family: 'Playfair Display', serif;
+  color: #ffffff;
+  text-shadow: 0 0 15px #ffffff, 0 0 25px #ffffff;
+  animation: cinemaTextIn 1.7s forwards;
+}
+
+.cinema-title {
+  opacity: 0;
+  font-family: 'Playfair Display', serif;
+  color: #ff006e;
+  text-shadow: 0 0 20px #ff006e, 0 0 40px #ff006e;
+  animation: cinemaTitleIn 2.4s forwards;
+}
+
+@keyframes cinemaTextIn {
+  0% {
+    opacity: 0;
+    transform: translateY(15px) scale(0.97);
+    filter: blur(3px);
+  }
+  30% { opacity: 0.4; }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes cinemaTitleIn {
+  0% {
+    opacity: 0;
+    transform: translateY(25px) scale(0.9);
+    filter: blur(6px);
+  }
+  60% { opacity: 0.8; }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+.cinema-fade-out {
+  animation: cinemaFadeOut 1.2s forwards;
+}
+
+@keyframes cinemaFadeOut {
+  from {
+    opacity: 1;
+    backdrop-filter: blur(6px);
+  }
+  to {
+    opacity: 0;
+    backdrop-filter: blur(0);
   }
 }
