@@ -1,87 +1,173 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, forwardRef, useImperativeHandle } from "react";
+import { Button } from "./ui/button";
+import { Volume2, VolumeX } from "lucide-react";
 
-export default function MusicPlayer() {
+// Arquivos locais em /public
+const INTRO_SRC = "/friends.mp3";   // Friends theme
+const FINAL_SRC = "/onedance.mp3";  // One Dance (instrumental ou normal)
+
+const MusicPlayer = forwardRef(function MusicPlayer(_, ref) {
   const audioRef = useRef(null);
-  const [playing, setPlaying] = useState(false);
-  const [volume, setVolume] = useState(0.3);
+  const fadeRef = useRef(null);
 
-  // Atualiza o volume sempre que mudar
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = volume;
-    }
-  }, [volume]);
+  const [baseVolume, setBaseVolume] = useState(0.30); // volume inicial (30%)
+  const [muted, setMuted] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTrack, setCurrentTrack] = useState("intro"); // 'intro' | 'final'
 
-  // Play/Pause com suporte ao Safari/iPhone
-  const togglePlay = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    if (!playing) {
-      audio
-        .play()
-        .then(() => setPlaying(true))
-        .catch((err) => {
-          console.log("Play bloqueado:", err);
-        });
-    } else {
-      audio.pause();
-      setPlaying(false);
+  // Limpa qualquer fade anterior
+  const clearFade = () => {
+    if (fadeRef.current) {
+      clearInterval(fadeRef.current);
+      fadeRef.current = null;
     }
   };
 
+  // Faz fade-in até o volume alvo
+  const startFadeIn = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    clearFade();
+
+    const finalVol = muted ? 0 : baseVolume;
+    audio.volume = 0;
+
+    const steps = 20;
+    let i = 0;
+
+    fadeRef.current = setInterval(() => {
+      i++;
+      const v = (finalVol * i) / steps;
+      audio.volume = v;
+
+      if (i >= steps) {
+        clearFade();
+      }
+    }, 80); // 20 passos * 80ms ≈ 1.6s de fade
+  };
+
+  // Toca uma track específica com fade-in
+  const playTrack = (track) => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    clearFade();
+
+    const src = track === "final" ? FINAL_SRC : INTRO_SRC;
+    audio.src = src;
+    audio.loop = true;
+
+    setCurrentTrack(track);
+
+    return audio
+      .play()
+      .then(() => {
+        setIsPlaying(true);
+        startFadeIn();
+      })
+      .catch((err) => {
+        console.log("Erro ao tentar tocar áudio:", err);
+        setIsPlaying(false);
+      });
+  };
+
+  // Métodos expostos para o App via ref
+  useImperativeHandle(ref, () => ({
+    playIntro: () => playTrack("intro"),
+    playFinal: () => playTrack("final"),
+    stop: () => {
+      const audio = audioRef.current;
+      if (!audio) return;
+      clearFade();
+      audio.pause();
+      audio.currentTime = 0;
+      setIsPlaying(false);
+    },
+  }));
+
+  // Botão play/pause global
+  const handleTogglePlay = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (!isPlaying) {
+      // (Re)começa a track atual
+      playTrack(currentTrack);
+    } else {
+      clearFade();
+      audio.pause();
+      setIsPlaying(false);
+    }
+  };
+
+  // Mute / unmute
+  const toggleMute = () => {
+    const audio = audioRef.current;
+    setMuted((prev) => {
+      const next = !prev;
+      if (audio) {
+        audio.volume = next ? 0 : baseVolume;
+      }
+      return next;
+    });
+  };
+
+  // Slider de volume
+  const handleSliderChange = (e) => {
+    const v = parseFloat(e.target.value);
+    if (Number.isNaN(v)) return;
+    setBaseVolume(v);
+
+    const audio = audioRef.current;
+    if (audio && !muted) {
+      audio.volume = v;
+    }
+  };
+
+  useEffect(() => {
+    return () => clearFade();
+  }, []);
+
   return (
-    <>
-      {/* Áudio local — GARANTIDO — /public/onedance.mp3 */}
-      <audio
-        ref={audioRef}
-        src="/onedance.mp3"
-        loop
-        preload="auto"
-        playsInline
-      />
+    <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
+      <audio ref={audioRef} preload="auto" playsInline />
 
-      {/* Botão de som simples */}
-      <div
-        style={{
-          position: "fixed",
-          top: 16,
-          right: 16,
-          zIndex: 9999,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "flex-end",
-          gap: "6px",
-        }}
+      {/* Botão neon/hacker */}
+      <Button
+        size="icon"
+        variant="outline"
+        onClick={handleTogglePlay}
+        className="rounded-full bg-black/80 border border-green-400 text-neon-green hover:bg-black hover:border-green-300 hover:shadow-[0_0_15px_rgba(74,222,128,0.7)] transition-all"
+        title={isPlaying ? "Pause music" : "Play music"}
       >
-        <button
-          onClick={togglePlay}
-          style={{
-            width: 44,
-            height: 44,
-            borderRadius: 12,
-            border: "1px solid #00ff85",
-            background: "rgba(0,0,0,0.85)",
-            color: "#00ff85",
-            fontSize: 20,
-            cursor: "pointer",
-          }}
-        >
-          {playing ? "🔊" : "🔇"}
-        </button>
-
-        {playing && (
-          <input
-            type="range"
-            min="0"
-            max="1"
-            step="0.05"
-            value={volume}
-            onChange={(e) => setVolume(parseFloat(e.target.value))}
-            style={{ width: 100 }}
-          />
+        {muted || !isPlaying ? (
+          <VolumeX className="w-5 h-5 text-neon-green" />
+        ) : (
+          <Volume2 className="w-5 h-5 text-neon-green" />
         )}
+      </Button>
+
+      {/* Slider de volume */}
+      <div className="hidden sm:flex items-center gap-2 bg-black/70 border border-green-500/60 rounded-full px-3 py-1">
+        <input
+          type="range"
+          min="0"
+          max="1"
+          step="0.05"
+          value={baseVolume}
+          onChange={handleSliderChange}
+          className="w-24 sm:w-32 accent-green-400 cursor-pointer"
+        />
+        <button
+          onClick={toggleMute}
+          className="text-[10px] text-neon-green font-mono"
+        >
+          {muted ? "MUTED" : `${Math.round(baseVolume * 100)}%`}
+        </button>
       </div>
-    </>
+    </div>
   );
-}
+});
+
+export default MusicPlayer;
