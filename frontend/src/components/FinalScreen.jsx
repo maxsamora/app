@@ -72,10 +72,12 @@ const FinalScreen = ({
   const [quizError, setQuizError] = useState("");
   const [quizCompleted, setQuizCompleted] = useState(false); // ✅ after she passes once
 
-  useEffect(() => {
-    const msgTimer = setTimeout(() => setShowMessage(true), 1000);
-    const btnTimer = setTimeout(() => setShowButton(true), 2000);
+  // Cinematic intro state
+  const [cinemaStep, setCinemaStep] = useState(0); // 0..4
+  const [cinemaDone, setCinemaDone] = useState(false);
 
+  useEffect(() => {
+    // Hearts animation
     const heartInterval = setInterval(() => {
       const newHeart = {
         id: Date.now() + Math.random(),
@@ -91,10 +93,24 @@ const FinalScreen = ({
       });
     }, 280);
 
+    // Cinematic steps
+    const t1 = setTimeout(() => setCinemaStep(1), 800);   // For your birthday…
+    const t2 = setTimeout(() => setCinemaStep(2), 2600);  // A secret remained hidden…
+    const t3 = setTimeout(() => setCinemaStep(3), 4400);  // Until now.
+    const t4 = setTimeout(() => setCinemaStep(4), 6500);  // (optional extra emphasis)
+    const tDone = setTimeout(() => {
+      setCinemaDone(true);
+      setShowMessage(true);
+      setShowButton(true);
+    }, 8500);
+
     return () => {
-      clearTimeout(msgTimer);
-      clearTimeout(btnTimer);
       clearInterval(heartInterval);
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+      clearTimeout(t4);
+      clearTimeout(tDone);
     };
   }, []);
 
@@ -276,6 +292,34 @@ const FinalScreen = ({
         </div>
       ))}
 
+      {/* CINEMATIC OVERLAY */}
+      {!cinemaDone && (
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/90">
+          <div className="text-center text-white px-6 max-w-xl">
+            {cinemaStep >= 1 && (
+              <p className="cinema-text mb-3 text-lg sm:text-2xl">
+                For your birthday…
+              </p>
+            )}
+            {cinemaStep >= 2 && (
+              <p className="cinema-text mb-3 text-lg sm:text-2xl">
+                A secret remained hidden…
+              </p>
+            )}
+            {cinemaStep >= 3 && (
+              <p className="cinema-text mb-8 text-lg sm:text-2xl">
+                Until now.
+              </p>
+            )}
+            {cinemaStep >= 4 && (
+              <p className="cinema-title text-3xl sm:text-5xl font-serif">
+                Your Secret Admirer is already watching you ❤️
+              </p>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* MAIN CONTENT */}
       <div className="content-wrapper relative z-10 max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-12 text-center">
         {/* Volume control */}
@@ -303,17 +347,19 @@ const FinalScreen = ({
         </div>
 
         {/* Celebration icon */}
-        <div className="mb-8 flex justify-center">
-          <div className="relative">
-            <div className="absolute inset-0 bg-green-500/25 rounded-full blur-3xl animate-pulse" />
-            <div className="relative rounded-full p-6 bg-black/70 backdrop-blur-sm border border-neon-green/40">
-              <PartyPopper className="w-16 h-16 neon-green" />
+        {cinemaDone && (
+          <div className="mb-8 flex justify-center fade-in">
+            <div className="relative">
+              <div className="absolute inset-0 bg-green-500/25 rounded-full blur-3xl animate-pulse" />
+              <div className="relative rounded-full p-6 bg-black/70 backdrop-blur-sm border border-neon-green/40">
+                <PartyPopper className="w-16 h-16 neon-green" />
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Main message */}
-        {showMessage && (
+        {cinemaDone && showMessage && (
           <div className="fade-in space-y-10">
             <div>
               <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold neon-green mb-4 leading-tight">
@@ -334,7 +380,7 @@ const FinalScreen = ({
                     className="w-11 h-11 neon-pink fill-current float"
                     style={{ animationDelay: "0.4s" }}
                   />
-                <Heart
+                  <Heart
                     className="w-7 h-7 neon-pink fill-current float"
                     style={{ animationDelay: "0.8s" }}
                   />
@@ -384,9 +430,9 @@ const FinalScreen = ({
               <p className="text-neon-pink text-2xl font-bold mb-4">
                 🎉 Alles Gute zum Geburtstag!
               </p>
-              
+
               <p className="text-neon-cyan mb-2">
-                If life ever feels heavy, take a breath and keep going. 
+                If life ever feels heavy, take a breath and keep going.
                 You have a beautiful heart, and the world feels softer when you’re in it.
                 Enjoy your days, stay close to the people who make you feel loved, and live moments that make your soul feel alive.
               </p>
