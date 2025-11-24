@@ -10,25 +10,28 @@ function App() {
   const [gameState, setGameState] = useState("start");
 
   // Audio state
-  const [volume, setVolume] = useState(0.25); // 25% background
+  const [volume, setVolume] = useState(0.25); // 25% (background suave)
   const [muted, setMuted] = useState(false);
   const [showPlayButton, setShowPlayButton] = useState(false);
 
-  // Ref to the <audio> element inside MusicPlayer
+  // Ref para o <audio> dentro do MusicPlayer
   const audioRef = useRef(null);
 
-  // Keep volume/mute synced with <audio>
+  // Mantém volume/mute sincronizado com o elemento <audio>
   useEffect(() => {
     if (!audioRef.current) return;
     audioRef.current.volume = muted ? 0 : volume;
   }, [volume, muted]);
 
-  // Helper: try to start audio playback
+  // ========= FUNÇÃO CENTRAL PARA TOCAR O ÁUDIO =========
   const tryPlayAudio = () => {
     const audio = audioRef.current;
-    if (!audio) return;
+    if (!audio) {
+      console.log("No audio element yet");
+      return;
+    }
 
-    // Guarantee we start from the beginning (optional)
+    // Garante que estamos no começo (opcional)
     if (audio.currentTime === 0 || audio.paused) {
       audio.currentTime = 0;
     }
@@ -46,8 +49,7 @@ function App() {
           })
           .catch((err) => {
             console.log("Autoplay blocked or failed:", err);
-            // Safari may block even after click → show fallback button in quiz
-            setShowPlayButton(true);
+            setShowPlayButton(true); // mostra botão "Tap to enable music" no quiz
           });
       } else {
         console.log("Audio started (no Promise).");
@@ -63,38 +65,35 @@ function App() {
   //       GAME FLOW
   // ======================
 
-  // Called when user clicks INITIALIZE SYSTEM
+  // Quando clica em INITIALIZE SYSTEM
   const startGame = () => {
-    // User gesture happens right here → perfect for Safari
+    // O clique do usuário acontece AQUI → melhor momento para tentar play()
     setGameState("quiz");
     setMuted(false);
     tryPlayAudio();
   };
 
-  // Called by QuizGame when all questions are done
+  // Quando termina o quiz
   const finishGame = () => {
     setGameState("final");
-    // If you want to stop music at the end, uncomment:
-    // if (audioRef.current) {
-    //   audioRef.current.pause();
-    // }
+    // Se quiser parar música no final, descomente:
+    // if (audioRef.current) audioRef.current.pause();
   };
 
-  // Called when user restarts from FinalScreen
+  // Quando reinicia do final
   const restartGame = () => {
     setGameState("start");
     setMuted(false);
     setVolume(0.25);
     setShowPlayButton(false);
 
-    // Stop and reset audio
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
     }
   };
 
-  // Volume & mute handlers used by QuizGame / FinalScreen
+  // Handlers de mute/volume usados no QuizGame e FinalScreen
   const toggleMute = () => {
     setMuted((prev) => !prev);
   };
@@ -104,12 +103,10 @@ function App() {
       typeof newVolume === "number" ? newVolume : parseFloat(newVolume);
     if (Number.isNaN(v)) return;
     setVolume(v);
-    if (v > 0) {
-      setMuted(false);
-    }
+    if (v > 0) setMuted(false);
   };
 
-  // Called by "Tap to enable music" button in QuizGame / FinalScreen
+  // Botão "Tap to enable music" no QuizGame/Final
   const handleManualPlay = () => {
     setMuted(false);
     tryPlayAudio();
@@ -120,8 +117,8 @@ function App() {
 
   return (
     <div className="App relative min-h-screen overflow-hidden">
-      {/* Single global audio element controlled via ref */}
-      <MusicPlayer ref={audioRef} />
+      {/* Único elemento <audio> global, com controls para debug */}
+      <MusicPlayer audioRef={audioRef} />
 
       {gameState === "start" && <StartScreen onStart={startGame} />}
 
