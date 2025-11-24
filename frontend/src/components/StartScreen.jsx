@@ -7,6 +7,10 @@ const StartScreen = ({ onStart }) => {
   const [showSubtext, setShowSubtext] = useState(false);
   const [glitchActive, setGlitchActive] = useState(false);
 
+  // etapas do texto cinematográfico
+  const [cinemaStep, setCinemaStep] = useState(0); // 0..3
+  const [cinemaDone, setCinemaDone] = useState(false);
+
   useEffect(() => {
     const timer = setTimeout(() => setShowSubtext(true), 1000);
 
@@ -21,11 +25,28 @@ const StartScreen = ({ onStart }) => {
     };
   }, []);
 
+  // Sequência cinematográfica inicial
+  useEffect(() => {
+    const t1 = setTimeout(() => setCinemaStep(1), 600);   // first line
+    const t2 = setTimeout(() => setCinemaStep(2), 2200);  // second line
+    const t3 = setTimeout(() => setCinemaStep(3), 4000);  // third line
+    const tDone = setTimeout(() => {
+      setCinemaDone(true);
+    }, 5800); // depois disso, mostra o conteúdo normal
+
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+      clearTimeout(tDone);
+    };
+  }, []);
+
   return (
     <GameShell background="https://media4.giphy.com/media/3OHA2GuEih6zphHvNI/giphy.gif">
       <div className="scanline" />
 
-      {/* pequeno efeito de linhas verdes, mantido mas suavizado */}
+      {/* linhas verdes suaves */}
       <div className="absolute inset-0 opacity-10 pointer-events-none">
         <div
           className="absolute inset-0"
@@ -37,7 +58,30 @@ const StartScreen = ({ onStart }) => {
         />
       </div>
 
-      <div className="text-center">
+      {/* OVERLAY CINEMATOGRÁFICO */}
+      {!cinemaDone && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/85 backdrop-blur-sm z-20">
+          <div className="text-center max-w-xl px-6">
+            {cinemaStep >= 1 && (
+              <p className="cinema-text mb-3 text-base sm:text-2xl">
+                On your birthday night…
+              </p>
+            )}
+            {cinemaStep >= 2 && (
+              <p className="cinema-text mb-3 text-base sm:text-2xl">
+                A secret admirer is running a little experiment.
+              </p>
+            )}
+            {cinemaStep >= 3 && (
+              <p className="cinema-title text-2xl sm:text-4xl mt-4">
+                Tonight, the code will reveal the truth.
+              </p>
+            )}
+          </div>
+        </div>
+      )}
+
+      <div className="text-center relative z-10 pt-10 sm:pt-16">
         {/* topo com estado do sistema */}
         <div className="mb-6 sm:mb-8 flex items-center justify-center gap-2 text-neon-green text-xs sm:text-sm">
           <Terminal className="w-4 h-4" />
@@ -45,7 +89,11 @@ const StartScreen = ({ onStart }) => {
         </div>
 
         {/* título principal */}
-        <div className={`mb-6 sm:mb-8 ${glitchActive ? "glitch" : ""}`}>
+        <div
+          className={`mb-6 sm:mb-8 transition-opacity duration-700 ${
+            cinemaDone ? "opacity-100" : "opacity-0"
+          } ${glitchActive ? "glitch" : ""}`}
+        >
           <h1
             className="
               text-3xl
@@ -65,7 +113,7 @@ const StartScreen = ({ onStart }) => {
           </h2>
         </div>
 
-        {showSubtext && (
+        {showSubtext && cinemaDone && (
           <div className="fade-in space-y-6 sm:space-y-8 mb-8 sm:mb-12">
             {/* cartinha de aniversário */}
             <div className="glow-box-purple rounded-lg p-4 sm:p-6 bg-black/60 backdrop-blur-sm max-w-xl mx-auto">
@@ -112,7 +160,7 @@ const StartScreen = ({ onStart }) => {
           </div>
         )}
 
-        {showSubtext && (
+        {showSubtext && cinemaDone && (
           <div className="fade-in">
             <Button
               onClick={onStart}
