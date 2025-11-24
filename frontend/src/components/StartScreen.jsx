@@ -46,7 +46,7 @@ const StartScreen = ({ onStart }) => {
     <GameShell background="https://media4.giphy.com/media/3OHA2GuEih6zphHvNI/giphy.gif">
       <div className="scanline" />
 
-      {/* pequeno efeito de linhas verdes, mantido mas suavizado */}
+      {/* linhas verdes suaves */}
       <div className="absolute inset-0 opacity-10 pointer-events-none">
         <div
           className="absolute inset-0"
