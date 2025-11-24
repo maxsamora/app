@@ -6,7 +6,7 @@ import GameShell from "./GameShell";
 /**
  * Hook simples de typewriter (escrita lenta)
  */
-function useTypewriter(text = "", speed = 45) {
+function useTypewriter(text = "", speed = 70) { // 👈 mais lento (era 45)
   const [output, setOutput] = useState("");
 
   useEffect(() => {
@@ -37,18 +37,18 @@ const StartScreen = ({ onStart }) => {
   const [cinemaStep, setCinemaStep] = useState(0); // 0..3
   const [cinemaDone, setCinemaDone] = useState(false);
 
-  // typewriter para cada frase
+  // typewriter para cada frase (também com speed mais lento)
   const line1 = useTypewriter(
     cinemaStep >= 1 ? "On your birthday night…" : "",
-    45
+    70
   );
   const line2 = useTypewriter(
     cinemaStep >= 2 ? "A secret admirer is running a little experiment." : "",
-    45
+    70
   );
   const line3 = useTypewriter(
     cinemaStep >= 3 ? "Tonight, the code will reveal the truth." : "",
-    45
+    70
   );
 
   useEffect(() => {
@@ -65,14 +65,14 @@ const StartScreen = ({ onStart }) => {
     };
   }, []);
 
-  // Sequência cinematográfica inicial (mais lenta)
+  // Sequência cinematográfica inicial (mais lenta também)
   useEffect(() => {
-    const t1 = setTimeout(() => setCinemaStep(1), 800);   // primeira frase
-    const t2 = setTimeout(() => setCinemaStep(2), 3500);  // segunda
-    const t3 = setTimeout(() => setCinemaStep(3), 6500);  // terceira
+    const t1 = setTimeout(() => setCinemaStep(1), 1200);  // antes 800
+    const t2 = setTimeout(() => setCinemaStep(2), 4200);  // antes 3500
+    const t3 = setTimeout(() => setCinemaStep(3), 7800);  // antes 6500
     const tDone = setTimeout(() => {
       setCinemaDone(true);
-    }, 9000); // depois disso, mostra o conteúdo normal
+    }, 11500); // antes 9000
 
     return () => {
       clearTimeout(t1);
