@@ -8,12 +8,12 @@ function App() {
   const [gameState, setGameState] = useState("start");
   const [musicPlaying, setMusicPlaying] = useState(false);
   const [volume, setVolume] = useState(0.3);
-  const [muted, setMuted] = useState(false);          
-  const [showPlayButton, setShowPlayButton] = useState(false); 
+  const [muted, setMuted] = useState(false);
+  const [showPlayButton, setShowPlayButton] = useState(false);
 
   // Audio references
-  const audioRef = useRef(null);        
-  const finalMusicRef = useRef(null);   
+  const audioRef = useRef(null);        // intro music
+  const finalMusicRef = useRef(null);   // final music
 
   // Music URLs
   const musicUrl =
@@ -32,24 +32,33 @@ function App() {
     }
   }, [volume, muted]);
 
-  // Manual play button (Safari mobile)
+  // Manual play button (used mainly on mobile)
   const handleManualPlay = () => {
     if (!audioRef.current) return;
 
     setMuted(false);
     setMusicPlaying(true);
-
     audioRef.current.currentTime = 0;
 
-    audioRef.current
-      .play()
-      .then(() => {
-        console.log("Intro music started manually.");
+    try {
+      const playResult = audioRef.current.play();
+      if (playResult && typeof playResult.then === "function") {
+        playResult
+          .then(() => {
+            console.log("Intro music started manually.");
+            setShowPlayButton(false);
+          })
+          .catch((err) => {
+            console.log("Manual play failed:", err);
+          });
+      } else {
+        // Older browsers may not return a promise
+        console.log("Intro music started manually (no promise).");
         setShowPlayButton(false);
-      })
-      .catch((err) => {
-        console.log("Manual play failed:", err);
-      });
+      }
+    } catch (err) {
+      console.log("Manual play threw an error:", err);
+    }
   };
 
   // Start game from StartScreen
@@ -58,23 +67,40 @@ function App() {
     setMuted(false);
     setMusicPlaying(true);
 
-    if (audioRef.current) {
-      audioRef.current.currentTime = 0;
+    // ALWAYS go to quiz screen, even if audio fails
+    setGameState("quiz");
 
-      audioRef.current
-        .play()
-        .then(() => {
-          console.log("Intro music started on user interaction.");
-          setShowPlayButton(false);
-          setGameState("quiz");
-        })
-        .catch((err) => {
-          console.log("Autoplay blocked on mobile. Need manual tap.", err);
-          setShowPlayButton(true); 
-          setGameState("quiz");
-        });
-    } else {
-      setGameState("quiz");
+    if (!audioRef.current) return;
+
+    audioRef.current.currentTime = 0;
+
+    try {
+      const playResult = audioRef.current.play();
+
+      if (playResult && typeof playResult.then === "function") {
+        playResult
+          .then(() => {
+            console.log("Intro music started on user interaction.");
+            setShowPlayButton(false);
+          })
+          .catch((err) => {
+            console.log(
+              "Autoplay blocked or failed, showing manual play button.",
+              err
+            );
+            setShowPlayButton(true);
+          });
+      } else {
+        // Older Safari / browsers that don't return a promise
+        console.log("Intro music started on user interaction (no promise).");
+        setShowPlayButton(false);
+      }
+    } catch (err) {
+      console.log(
+        "Intro music play threw an error, showing manual play button.",
+        err
+      );
+      setShowPlayButton(true);
     }
   };
 
@@ -92,10 +118,19 @@ function App() {
     if (finalMusicRef.current) {
       finalMusicRef.current.currentTime = 0;
 
-      finalMusicRef.current
-        .play()
-        .then(() => console.log("Final music started."))
-        .catch((err) => console.log("Final music blocked:", err));
+      try {
+        const playResult = finalMusicRef.current.play();
+
+        if (playResult && typeof playResult.then === "function") {
+          playResult
+            .then(() => console.log("Final music started."))
+            .catch((err) => console.log("Final music blocked:", err));
+        } else {
+          console.log("Final music started (no promise).");
+        }
+      } catch (err) {
+        console.log("Final music play threw an error:", err);
+      }
     }
   };
 
@@ -133,7 +168,7 @@ function App() {
         src={musicUrl}
         loop
         preload="auto"
-        playsInline   // Required for Safari mobile
+        playsInline   // important for Safari mobile
       />
 
       {/* Final Music */}
