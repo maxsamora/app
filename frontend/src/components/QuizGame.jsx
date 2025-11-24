@@ -7,8 +7,6 @@ import {
   XCircle,
   Sparkles,
   Lightbulb,
-  Volume2,
-  VolumeX,
 } from "lucide-react";
 import GameShell from "./GameShell";
 
@@ -108,23 +106,12 @@ const hackerMessages = [
   "Processing love.exe...",
 ];
 
-const QuizGame = ({
-  onFinish,
-  musicPlaying,
-  volume,
-  muted,
-  onToggleMute,
-  onVolumeChange,
-  showPlayButton,
-  onManualPlay,
-}) => {
+const QuizGame = ({ onFinish }) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [userAnswer, setUserAnswer] = useState("");
   const [isCorrect, setIsCorrect] = useState(null);
   const [showHint, setShowHint] = useState(false);
-  const [hackerMessage, setHackerMessage] = useState(
-    hackerMessages[0]
-  );
+  const [hackerMessage, setHackerMessage] = useState(hackerMessages[0]);
   const [attempts, setAttempts] = useState(0);
   const [fadeIn, setFadeIn] = useState(true);
 
@@ -138,7 +125,7 @@ const QuizGame = ({
     });
   }, []);
 
-  // Atualiza mensagem hacker + fade
+  // Update hacker message + fade
   useEffect(() => {
     setHackerMessage(
       hackerMessages[currentQuestion % hackerMessages.length]
@@ -156,8 +143,8 @@ const QuizGame = ({
     const correctAnswer = normalizeAnswer(
       questions[currentQuestion].answer
     );
-    const alternatives = questions[currentQuestion].alternatives.map(
-      (alt) => normalizeAnswer(alt)
+    const alternatives = questions[currentQuestion].alternatives.map((alt) =>
+      normalizeAnswer(alt)
     );
 
     if (normalized === correctAnswer || alternatives.includes(normalized)) {
@@ -177,27 +164,16 @@ const QuizGame = ({
       setIsCorrect(false);
       setAttempts((prev) => {
         const next = prev + 1;
-        if (next >= 2) {
-          setShowHint(true);
-        }
+        if (next >= 2) setShowHint(true);
         return next;
       });
-      setTimeout(() => {
-        setIsCorrect(null);
-      }, 1500);
+      setTimeout(() => setIsCorrect(null), 1500);
     }
   };
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter" && userAnswer.trim()) {
       checkAnswer();
-    }
-  };
-
-  const handleVolumeSliderChange = (e) => {
-    const value = parseFloat(e.target.value);
-    if (!Number.isNaN(value)) {
-      onVolumeChange?.(value);
     }
   };
 
@@ -213,41 +189,6 @@ const QuizGame = ({
             fadeIn ? "fade-in" : ""
           }`}
         >
-          {/* Volume + Mobile Play Helper */}
-          <div className="flex justify-end mb-2 gap-3 items-center">
-            {showPlayButton && (
-              <button
-                onClick={onManualPlay}
-                className="px-3 py-2 rounded-lg bg-black/80 text-neon-green text-[11px] sm:text-xs font-mono border border-green-500/60 hover:bg-black"
-              >
-                Tap to enable music 🔊
-              </button>
-            )}
-
-            <div className="flex items-center gap-2">
-              <button
-                onClick={onToggleMute}
-                className="p-3 rounded-lg bg-black/70 backdrop-blur-sm border border-green-500/50 hover:border-green-500 hover:bg-black/90 transition-all"
-                title={muted ? "Unmute music" : "Mute music"}
-              >
-                {muted ? (
-                  <VolumeX className="w-5 h-5 text-neon-green" />
-                ) : (
-                  <Volume2 className="w-5 h-5 text-neon-green" />
-                )}
-              </button>
-              <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.05"
-                value={volume}
-                onChange={handleVolumeSliderChange}
-                className="w-24 sm:w-32 accent-green-500 cursor-pointer"
-              />
-            </div>
-          </div>
-
           {/* Progress */}
           <div className="glow-box rounded-lg p-4 bg-black/80 backdrop-blur-sm">
             <div className="flex items-center justify-between mb-2">
