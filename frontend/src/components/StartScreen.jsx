@@ -3,6 +3,32 @@ import { Button } from "./ui/button";
 import { Heart, Terminal, Volume2 } from "lucide-react";
 import GameShell from "./GameShell";
 
+/**
+ * Hook simples de typewriter (escrita lenta)
+ */
+function useTypewriter(text = "", speed = 45) {
+  const [output, setOutput] = useState("");
+
+  useEffect(() => {
+    setOutput("");
+
+    if (!text) return;
+
+    let i = 0;
+    const interval = setInterval(() => {
+      setOutput((prev) => prev + text[i]);
+      i++;
+      if (i >= text.length) {
+        clearInterval(interval);
+      }
+    }, speed);
+
+    return () => clearInterval(interval);
+  }, [text, speed]);
+
+  return output;
+}
+
 const StartScreen = ({ onStart }) => {
   const [showSubtext, setShowSubtext] = useState(false);
   const [glitchActive, setGlitchActive] = useState(false);
@@ -10,6 +36,20 @@ const StartScreen = ({ onStart }) => {
   // etapas do texto cinematográfico
   const [cinemaStep, setCinemaStep] = useState(0); // 0..3
   const [cinemaDone, setCinemaDone] = useState(false);
+
+  // typewriter para cada frase
+  const line1 = useTypewriter(
+    cinemaStep >= 1 ? "On your birthday night…" : "",
+    45
+  );
+  const line2 = useTypewriter(
+    cinemaStep >= 2 ? "A secret admirer is running a little experiment." : "",
+    45
+  );
+  const line3 = useTypewriter(
+    cinemaStep >= 3 ? "Tonight, the code will reveal the truth." : "",
+    45
+  );
 
   useEffect(() => {
     const timer = setTimeout(() => setShowSubtext(true), 1000);
@@ -25,14 +65,14 @@ const StartScreen = ({ onStart }) => {
     };
   }, []);
 
-  // Sequência cinematográfica inicial
+  // Sequência cinematográfica inicial (mais lenta)
   useEffect(() => {
-    const t1 = setTimeout(() => setCinemaStep(1), 600);   // first line
-    const t2 = setTimeout(() => setCinemaStep(2), 2200);  // second line
-    const t3 = setTimeout(() => setCinemaStep(3), 4000);  // third line
+    const t1 = setTimeout(() => setCinemaStep(1), 800);   // primeira frase
+    const t2 = setTimeout(() => setCinemaStep(2), 3500);  // segunda
+    const t3 = setTimeout(() => setCinemaStep(3), 6500);  // terceira
     const tDone = setTimeout(() => {
       setCinemaDone(true);
-    }, 5800); // depois disso, mostra o conteúdo normal
+    }, 9000); // depois disso, mostra o conteúdo normal
 
     return () => {
       clearTimeout(t1);
@@ -58,23 +98,23 @@ const StartScreen = ({ onStart }) => {
         />
       </div>
 
-      {/* OVERLAY CINEMATOGRÁFICO */}
+      {/* OVERLAY CINEMATOGRÁFICO COM TYPEWRITER */}
       {!cinemaDone && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/85 backdrop-blur-sm z-20">
           <div className="text-center max-w-xl px-6">
             {cinemaStep >= 1 && (
               <p className="cinema-text mb-3 text-base sm:text-2xl">
-                On your birthday night…
+                {line1}
               </p>
             )}
             {cinemaStep >= 2 && (
               <p className="cinema-text mb-3 text-base sm:text-2xl">
-                A secret admirer is running a little experiment.
+                {line2}
               </p>
             )}
             {cinemaStep >= 3 && (
               <p className="cinema-title text-2xl sm:text-4xl mt-4">
-                Tonight, the code will reveal the truth.
+                {line3}
               </p>
             )}
           </div>
